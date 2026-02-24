@@ -35,7 +35,13 @@ interface CartContextType {
     clearCart: () => Promise<void>;
     getCartTotal: () => number;
     getCartCount: () => number;
-    isInCart: (productId: number) => boolean;
+    isInCart: (
+        productId: number,
+        selectedColor?: string,
+        selectedSize?: string,
+        customSelections?: Record<string, string>,
+        selectedVariant?: { id: number }
+    ) => boolean;
     syncGuestCart: (token: string) => Promise<void>;
     refreshCart: () => Promise<void>;
 }
@@ -175,11 +181,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
         } else {
             setItems(prev => {
-                // For guest cart, check productId + color + size combo
+                // For guest cart, check exact match of product + all selected variants
                 const existing = prev.find(i =>
                     i.productId === item.productId &&
                     i.selectedColor === item.selectedColor &&
-                    i.selectedSize === item.selectedSize
+                    i.selectedSize === item.selectedSize &&
+                    i.selectedVariant?.id === item.selectedVariant?.id &&
+                    JSON.stringify(i.customSelections) === JSON.stringify(item.customSelections)
                 );
                 let newItems: CartItem[];
                 if (existing) {
@@ -189,7 +197,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             : i
                     );
                 } else {
-                    const newId = `${item.productId}-${item.selectedColor || ''}-${item.selectedSize || ''}-${Date.now()}`;
+                    // Create a unique hash for the variant combination
+                    const variantHash = [
+                        item.selectedColor || '',
+                        item.selectedSize || '',
+                        item.selectedVariant?.id || '',
+                        item.customSelections ? JSON.stringify(item.customSelections) : ''
+                    ].join('-');
+                    const newId = `${item.productId}-${variantHash}-${Date.now()}`;
                     newItems = [...prev, { ...item, id: newId, quantity }];
                 }
                 saveGuestCart(newItems);
@@ -276,8 +291,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return items.reduce((count, item) => count + item.quantity, 0);
     }, [items]);
 
-    const isInCart = useCallback((productId: number) => {
-        return items.some(item => item.productId === productId);
+    const isInCart = useCallback((
+        productId: number,
+        selectedColor?: string,
+        selectedSize?: string,
+        customSelections?: Record<string, string>,
+        selectedVariant?: { id: number }
+    ) => {
+        return items.some(item =>
+            item.productId === productId &&
+            item.selectedColor === (selectedColor || undefined) &&
+            item.selectedSize === (selectedSize || undefined) &&
+            item.selectedVariant?.id === selectedVariant?.id &&
+            JSON.stringify(item.customSelections) === JSON.stringify(customSelections)
+        );
     }, [items]);
 
     return (
