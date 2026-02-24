@@ -53,6 +53,9 @@ export default function AdminLoginPage() {
                             src="https://knex.com.bd/wp-content/uploads/2025/07/cropped-3d-png.png"
                             alt="KNEX Logo"
                             fill
+                            sizes="80px"
+                            priority
+                            loading="eager"
                             className="object-contain"
                         />
                     </div>

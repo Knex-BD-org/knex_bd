@@ -11,6 +11,7 @@ import ProductVariations from "@/components/admin/ProductVariations";
 import ProductImages from "@/components/admin/ProductImages";
 import ProductVariants from "@/components/admin/ProductVariants";
 import ProductPreview from "@/components/admin/ProductPreview";
+import { useNotification } from "@/context/NotificationContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -49,6 +50,7 @@ export default function AdminEditProduct() {
     const [description, setDescription] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);
     const [variants, setVariants] = useState<{ name: string; values: string[]; prices?: { [key: string]: number } }[]>([]);
+    const { showToast } = useNotification();
 
     // Real data from API
     const [categories, setCategories] = useState<Category[]>([]);
@@ -88,6 +90,7 @@ export default function AdminEditProduct() {
                 originalPrice: 0,
                 categoryId: "",
                 subCategoryId: "",
+                subSubCategoryId: "",
                 brandId: "",
                 features: [],
                 rating: 0,
@@ -112,6 +115,7 @@ export default function AdminEditProduct() {
                 originalPrice: p.originalPrice,
                 categoryId: p.categoryId || "",
                 subCategoryId: p.subCategoryId || "",
+                subSubCategoryId: p.subSubCategoryId || "",
                 brandId: p.brandId || "",
                 features: p.features || [],
                 rating: p.rating,
@@ -173,6 +177,7 @@ export default function AdminEditProduct() {
                 originalPrice: Number(product.originalPrice) || Number(product.price),
                 categoryId: product.categoryId || null,
                 subCategoryId: product.subCategoryId || null,
+                subSubCategoryId: product.subSubCategoryId || null,
                 brandId: product.brandId || null,
                 image: mainImage,
                 gallery,
@@ -211,11 +216,11 @@ export default function AdminEditProduct() {
                 throw new Error(error.message || "Failed to save product");
             }
 
-            alert(isNew ? "Product created successfully!" : "Product updated successfully!");
+            showToast(isNew ? "Product created successfully!" : "Product updated successfully!");
             router.push("/admin/products");
         } catch (error: any) {
             console.error("Error saving product:", error);
-            alert(error.message || "Error saving product");
+            showToast(error.message || "Error saving product", "error");
         } finally {
             setSaving(false);
         }

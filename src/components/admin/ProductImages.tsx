@@ -2,6 +2,7 @@
 import { ImagePlus, Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { useNotification } from "@/context/NotificationContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -15,6 +16,8 @@ interface ProductImagesProps {
 export default function ProductImages({ mainImage, setMainImage, gallery, setGallery }: ProductImagesProps) {
     const [uploading, setUploading] = useState(false);
     const [uploadingGallery, setUploadingGallery] = useState(false);
+    const [sessionUrls, setSessionUrls] = useState<Set<string>>(new Set());
+    const { showToast } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
         const formData = new FormData();
@@ -29,16 +32,29 @@ export default function ProductImages({ mainImage, setMainImage, gallery, setGal
             if (res.ok) {
                 const data = await res.json();
                 console.log(`Image uploaded: ${data.sizeKB}`);
+                setSessionUrls(prev => new Set(prev).add(data.url));
                 return data.url;
             } else {
                 const error = await res.json();
-                alert(error.error || "Failed to upload image");
+                showToast(error.error || "Failed to upload image", "error");
                 return null;
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Failed to upload image");
+            showToast("Failed to upload image", "error");
             return null;
+        }
+    };
+
+    const deleteImageFromCloudinary = async (url: string) => {
+        try {
+            await fetch(`${API_URL}/upload/delete-by-url`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url }),
+            });
+        } catch (error) {
+            console.error("Error deleting image from session:", error);
         }
     };
 
@@ -76,6 +92,30 @@ export default function ProductImages({ mainImage, setMainImage, gallery, setGal
         e.target.value = ""; // Reset input
     };
 
+    const handleRemoveMain = () => {
+        if (sessionUrls.has(mainImage)) {
+            deleteImageFromCloudinary(mainImage);
+            setSessionUrls(prev => {
+                const next = new Set(prev);
+                next.delete(mainImage);
+                return next;
+            });
+        }
+        setMainImage("");
+    };
+
+    const handleRemoveGallery = (url: string, idx: number) => {
+        if (sessionUrls.has(url)) {
+            deleteImageFromCloudinary(url);
+            setSessionUrls(prev => {
+                const next = new Set(prev);
+                next.delete(url);
+                return next;
+            });
+        }
+        setGallery(gallery.filter((_, i) => i !== idx));
+    };
+
     return (
         <>
             <div className="md:col-span-2">
@@ -88,7 +128,7 @@ export default function ProductImages({ mainImage, setMainImage, gallery, setGal
                         <div className="relative w-24 h-24 border border-gray-200 rounded-lg overflow-hidden" suppressHydrationWarning>
                             <Image src={mainImage} alt="Main" fill className="object-cover" unoptimized />
                             <button
-                                onClick={() => setMainImage("")}
+                                onClick={handleRemoveMain}
                                 className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
                             >
                                 <X className="w-4 h-4" />
@@ -133,7 +173,7 @@ export default function ProductImages({ mainImage, setMainImage, gallery, setGal
                         {gallery.map((img, idx) => (
                             <div key={idx} className="relative w-24 h-24 border border-gray-200 rounded-lg overflow-hidden group">
                                 <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" unoptimized />
-                                <button onClick={() => setGallery(gallery.filter((_, i) => i !== idx))} className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button onClick={() => handleRemoveGallery(img, idx)} className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>

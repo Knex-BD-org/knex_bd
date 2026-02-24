@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { onTokenChange } from "@/lib/authHelper";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -35,7 +36,13 @@ interface CartContextType {
     clearCart: () => Promise<void>;
     getCartTotal: () => number;
     getCartCount: () => number;
-    isInCart: (productId: number) => boolean;
+    isInCart: (
+        productId: number,
+        selectedColor?: string,
+        selectedSize?: string,
+        customSelections?: Record<string, string>,
+        selectedVariant?: { id: number }
+    ) => boolean;
     syncGuestCart: (token: string) => Promise<void>;
     refreshCart: () => Promise<void>;
 }
@@ -67,7 +74,12 @@ const clearGuestCart = () => {
 export function CartProvider({ children }: { children: ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(() => {
+        if (typeof window !== "undefined") {
+            return !!localStorage.getItem("userToken");
+        }
+        return false;
+    });
 
     const loadCart = useCallback(async () => {
         const token = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
@@ -117,8 +129,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
         };
 
         initCart();
-        return () => { isMounted = false; };
-    }, []);
+
+        // Listen for token changes to update state immediately
+        // This ensures loadCart fires only after userToken is in localStorage
+        const unsubscribe = onTokenChange((token) => {
+            setIsLoggedIn(!!token);
+            if (token) {
+                loadCart();
+            } else {
+                setItems(getGuestCart());
+            }
+        });
+
+        return () => {
+            isMounted = false;
+            unsubscribe();
+        };
+    }, [loadCart]);
 
     const syncGuestCart = useCallback(async (token: string) => {
         const guestItems = getGuestCart();
@@ -175,11 +202,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
         } else {
             setItems(prev => {
-                // For guest cart, check productId + color + size combo
+                // For guest cart, check exact match of product + all selected variants
                 const existing = prev.find(i =>
                     i.productId === item.productId &&
                     i.selectedColor === item.selectedColor &&
-                    i.selectedSize === item.selectedSize
+                    i.selectedSize === item.selectedSize &&
+                    i.selectedVariant?.id === item.selectedVariant?.id &&
+                    JSON.stringify(i.customSelections) === JSON.stringify(item.customSelections)
                 );
                 let newItems: CartItem[];
                 if (existing) {
@@ -189,7 +218,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             : i
                     );
                 } else {
-                    const newId = `${item.productId}-${item.selectedColor || ''}-${item.selectedSize || ''}-${Date.now()}`;
+                    // Create a unique hash for the variant combination
+                    const variantHash = [
+                        item.selectedColor || '',
+                        item.selectedSize || '',
+                        item.selectedVariant?.id || '',
+                        item.customSelections ? JSON.stringify(item.customSelections) : ''
+                    ].join('-');
+                    const newId = `${item.productId}-${variantHash}-${Date.now()}`;
                     newItems = [...prev, { ...item, id: newId, quantity }];
                 }
                 saveGuestCart(newItems);
@@ -276,8 +312,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return items.reduce((count, item) => count + item.quantity, 0);
     }, [items]);
 
-    const isInCart = useCallback((productId: number) => {
-        return items.some(item => item.productId === productId);
+    const isInCart = useCallback((
+        productId: number,
+        selectedColor?: string,
+        selectedSize?: string,
+        customSelections?: Record<string, string>,
+        selectedVariant?: { id: number }
+    ) => {
+        return items.some(item =>
+            item.productId === productId &&
+            item.selectedColor === (selectedColor || undefined) &&
+            item.selectedSize === (selectedSize || undefined) &&
+            item.selectedVariant?.id === selectedVariant?.id &&
+            JSON.stringify(item.customSelections) === JSON.stringify(customSelections)
+        );
     }, [items]);
 
     return (

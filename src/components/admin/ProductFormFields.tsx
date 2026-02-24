@@ -2,19 +2,31 @@ import { FileText, Tag, X, Plus, Trash2, Upload, Loader2, Search } from "lucide-
 import RichTextEditor from "./RichTextEditor";
 import { useState } from "react";
 import SearchableSelect from "./SearchableSelect";
+import { useNotification } from "@/context/NotificationContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+interface SubSubCategory {
+    id: string;
+    name: string;
+    slug: string;
+    image?: string;
+}
 
 interface SubCategory {
     id: string;
     name: string;
     slug: string;
+    image?: string;
+    subSubCategories?: SubSubCategory[];
 }
 
 interface Category {
     id: string;
     name: string;
     slug: string;
+    image?: string;
+    icon?: string;
     subCategories?: SubCategory[];
 }
 
@@ -30,6 +42,7 @@ interface Product {
     originalPrice?: number;
     categoryId?: string;
     subCategoryId?: string;
+    subSubCategoryId?: string;
     brandId?: string;
     sku?: string;
     rating?: number;
@@ -67,15 +80,22 @@ export default function ProductFormFields({
 }: ProductFormFieldsProps) {
     const [showNewCategory, setShowNewCategory] = useState(false);
     const [showNewSubcategory, setShowNewSubcategory] = useState(false);
+    const [showNewSubSubcategory, setShowNewSubSubcategory] = useState(false);
     const [showNewBrand, setShowNewBrand] = useState(false);
+
     const [newCategoryName, setNewCategoryName] = useState("");
     const [newCategoryIcon, setNewCategoryIcon] = useState("");
     const [newSubcategoryName, setNewSubcategoryName] = useState("");
     const [newSubcategoryImage, setNewSubcategoryImage] = useState("");
+    const [newSubSubcategoryName, setNewSubSubcategoryName] = useState("");
+    const [newSubSubcategoryImage, setNewSubSubcategoryImage] = useState("");
     const [newBrandName, setNewBrandName] = useState("");
+
     const [saving, setSaving] = useState(false);
     const [isEditingCategory, setIsEditingCategory] = useState(false);
     const [isEditingSubcategory, setIsEditingSubcategory] = useState(false);
+    const [isEditingSubSubcategory, setIsEditingSubSubcategory] = useState(false);
+    const { showToast, confirm } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
         const formData = new FormData();
@@ -90,12 +110,12 @@ export default function ProductFormFields({
                 return data.url;
             } else {
                 const error = await res.json();
-                alert(error.error || "Failed to upload image");
+                showToast(error.error || "Failed to upload image", "error");
                 return null;
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Failed to upload image");
+            showToast("Failed to upload image", "error");
             return null;
         }
     };
@@ -126,9 +146,9 @@ export default function ProductFormFields({
             if (res.ok) {
                 const updatedCat = await res.json();
                 if (!isEditingCategory) {
-                    setProduct({ ...product, categoryId: String(updatedCat.id), subCategoryId: "" });
+                    setProduct({ ...product, categoryId: String(updatedCat.id), subCategoryId: "", subSubCategoryId: "" });
                 }
-                alert(isEditingCategory ? "Category updated successfully!" : "Category added successfully!");
+                showToast(isEditingCategory ? "Category updated successfully!" : "Category added successfully!");
                 setNewCategoryName("");
                 setNewCategoryIcon("");
                 setShowNewCategory(false);
@@ -136,7 +156,7 @@ export default function ProductFormFields({
                 onCategoriesChange?.();
             } else {
                 const err = await res.json();
-                alert(err.error || "Failed to save category");
+                showToast(err.error || "Failed to save category", "error");
             }
         } catch (error) {
             console.error("Error saving category:", error);
@@ -185,9 +205,9 @@ export default function ProductFormFields({
             if (res.ok) {
                 const updatedSub = await res.json();
                 if (!isEditingSubcategory) {
-                    setProduct({ ...product, subCategoryId: String(updatedSub.id) });
+                    setProduct({ ...product, subCategoryId: String(updatedSub.id), subSubCategoryId: "" });
                 }
-                alert(isEditingSubcategory ? "Subcategory updated successfully!" : "Subcategory added successfully!");
+                showToast(isEditingSubcategory ? "Subcategory updated successfully!" : "Subcategory added successfully!");
                 setNewSubcategoryName("");
                 setNewSubcategoryImage("");
                 setShowNewSubcategory(false);
@@ -195,12 +215,71 @@ export default function ProductFormFields({
                 onCategoriesChange?.();
             } else {
                 const err = await res.json();
-                alert(err.error || "Failed to save subcategory");
+                showToast(err.error || "Failed to save subcategory", "error");
             }
         } catch (error) {
             console.error("Error saving subcategory:", error);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleAddSubSubcategory = async () => {
+        if (!newSubSubcategoryName.trim() || !product.subCategoryId) return;
+        setSaving(true);
+        try {
+            const token = localStorage.getItem("adminToken");
+            const url = isEditingSubSubcategory && product.subSubCategoryId
+                ? `${API_URL}/categories/${product.categoryId}/subcategory/${product.subCategoryId}/subsubcategory/${product.subSubCategoryId}`
+                : `${API_URL}/categories/${product.categoryId}/subcategory/${product.subCategoryId}/subsubcategory`;
+            const method = isEditingSubSubcategory ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    name: newSubSubcategoryName.trim(),
+                    slug: newSubSubcategoryName.trim().toLowerCase().replace(/\s+/g, '-'),
+                    image: newSubSubcategoryImage.trim() || null
+                }),
+            });
+            if (res.ok) {
+                const updatedSubSub = await res.json();
+                if (!isEditingSubSubcategory) {
+                    setProduct({ ...product, subSubCategoryId: String(updatedSubSub.id) });
+                }
+                showToast(isEditingSubSubcategory ? "Sub-subcategory updated successfully!" : "Sub-subcategory added successfully!");
+                setNewSubSubcategoryName("");
+                setNewSubSubcategoryImage("");
+                setShowNewSubSubcategory(false);
+                setIsEditingSubSubcategory(false);
+                onCategoriesChange?.();
+            } else {
+                const err = await res.json();
+                showToast(err.error || "Failed to save sub-subcategory", "error");
+            }
+        } catch (error) {
+            console.error("Error saving sub-subcategory:", error);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleEditSubSubcategory = () => {
+        const subSub = selectedSubCategory?.subSubCategories?.find(s => String(s.id) === String(product.subSubCategoryId));
+        if (subSub) {
+            setNewSubSubcategoryName(subSub.name);
+            let img = subSub.image || "";
+            if (img.startsWith('/uploads')) {
+                const baseUrl = API_URL.replace('/api', '');
+                img = `${baseUrl}${img}`;
+            }
+            setNewSubSubcategoryImage(img);
+            setIsEditingSubSubcategory(true);
+            setShowNewSubSubcategory(true);
         }
     };
 
@@ -247,76 +326,137 @@ export default function ProductFormFields({
     };
 
     const handleDeleteCategory = async (categoryId: string) => {
-        if (!confirm("Are you sure you want to delete this category? This will fail if it has subcategories or products.")) return;
-        try {
-            const token = localStorage.getItem("adminToken");
-            const res = await fetch(`${API_URL}/categories/${categoryId}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.ok) {
-                if (product.categoryId === categoryId) {
-                    setProduct({ ...product, categoryId: "", subCategoryId: "" });
+        confirm({
+            title: "Delete Category",
+            message: "Are you sure you want to delete this category? This will fail if it has subcategories or products.",
+            variant: "danger",
+            confirmText: "Delete",
+            onConfirm: async () => {
+                try {
+                    const token = localStorage.getItem("adminToken");
+                    const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        if (product.categoryId === categoryId) {
+                            setProduct({ ...product, categoryId: "", subCategoryId: "", subSubCategoryId: "" });
+                        }
+                        showToast("Category deleted successfully");
+                        onCategoriesChange?.();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.error || "Failed to delete category", "error");
+                    }
+                } catch (error) {
+                    console.error("Error deleting category:", error);
+                    showToast("Error deleting category", "error");
                 }
-                onCategoriesChange?.();
-            } else {
-                const data = await res.json();
-                alert(data.error || "Failed to delete category");
             }
-        } catch (error) {
-            console.error("Error deleting category:", error);
-        }
+        });
     };
 
     const handleDeleteSubcategory = async (subId: string) => {
-        if (!confirm("Are you sure you want to delete this subcategory? This will fail if it has products.")) return;
-        try {
-            const token = localStorage.getItem("adminToken");
-            const res = await fetch(`${API_URL}/categories/${product.categoryId}/subcategory/${subId}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.ok) {
-                if (product.subCategoryId === subId) {
-                    setProduct({ ...product, subCategoryId: "" });
+        confirm({
+            title: "Delete Subcategory",
+            message: "Are you sure you want to delete this subcategory? This will fail if it has sub-subcategories or products.",
+            variant: "danger",
+            confirmText: "Delete",
+            onConfirm: async () => {
+                try {
+                    const token = localStorage.getItem("adminToken");
+                    const res = await fetch(`${API_URL}/categories/${product.categoryId}/subcategory/${subId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        if (product.subCategoryId === subId) {
+                            setProduct({ ...product, subCategoryId: "", subSubCategoryId: "" });
+                        }
+                        showToast("Subcategory deleted successfully");
+                        onCategoriesChange?.();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.error || "Failed to delete subcategory", "error");
+                    }
+                } catch (error) {
+                    console.error("Error deleting subcategory:", error);
+                    showToast("Error deleting subcategory", "error");
                 }
-                onCategoriesChange?.();
-            } else {
-                const data = await res.json();
-                alert(data.error || "Failed to delete subcategory");
             }
-        } catch (error) {
-            console.error("Error deleting subcategory:", error);
-        }
+        });
+    };
+
+    const handleDeleteSubSubcategory = async (subSubId: string) => {
+        confirm({
+            title: "Delete Sub-subcategory",
+            message: "Are you sure you want to delete this sub-subcategory? This will fail if it has products.",
+            variant: "danger",
+            confirmText: "Delete",
+            onConfirm: async () => {
+                try {
+                    const token = localStorage.getItem("adminToken");
+                    const res = await fetch(`${API_URL}/categories/${product.categoryId}/subcategory/${product.subCategoryId}/subsubcategory/${subSubId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        if (product.subSubCategoryId === subSubId) {
+                            setProduct({ ...product, subSubCategoryId: "" });
+                        }
+                        showToast("Sub-subcategory deleted successfully");
+                        onCategoriesChange?.();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.error || "Failed to delete sub-subcategory", "error");
+                    }
+                } catch (error) {
+                    console.error("Error deleting sub-subcategory:", error);
+                    showToast("Error deleting sub-subcategory", "error");
+                }
+            }
+        });
     };
 
     const handleDeleteBrand = async (brandId: string) => {
-        if (!confirm("Are you sure you want to delete this brand? This will fail if it has products.")) return;
-        try {
-            const token = localStorage.getItem("adminToken");
-            const res = await fetch(`${API_URL}/brands/${brandId}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.ok) {
-                if (product.brandId === brandId) {
-                    setProduct({ ...product, brandId: "" });
+        confirm({
+            title: "Delete Brand",
+            message: "Are you sure you want to delete this brand? This will fail if it has products.",
+            variant: "danger",
+            confirmText: "Delete",
+            onConfirm: async () => {
+                try {
+                    const token = localStorage.getItem("adminToken");
+                    const res = await fetch(`${API_URL}/brands/${brandId}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        if (product.brandId === brandId) {
+                            setProduct({ ...product, brandId: "" });
+                        }
+                        showToast("Brand deleted successfully");
+                        onBrandsChange?.();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.error || "Failed to delete brand", "error");
+                    }
+                } catch (error) {
+                    console.error("Error deleting brand:", error);
+                    showToast("Error deleting brand", "error");
                 }
-                onBrandsChange?.();
-            } else {
-                const data = await res.json();
-                alert(data.error || "Failed to delete brand");
             }
-        } catch (error) {
-            console.error("Error deleting brand:", error);
-        }
+        });
     };
 
     const selectedCategory = categories.find(c => String(c.id) === String(product.categoryId));
     const subCategories = selectedCategory?.subCategories || [];
+    const selectedSubCategory = subCategories.find(s => String(s.id) === String(product.subCategoryId));
+    const subSubCategories = selectedSubCategory?.subSubCategories || [];
 
     console.log("Selected category:", selectedCategory);
     console.log("SubCategories:", subCategories);
+    console.log("SubSubCategories:", subSubCategories);
 
     return (
         <>
@@ -372,7 +512,7 @@ export default function ProductFormFields({
                             value={product.categoryId || ""}
                             onChange={(val) => {
                                 console.log("Category selected:", val);
-                                setProduct({ ...product, categoryId: val, subCategoryId: "" });
+                                setProduct({ ...product, categoryId: val, subCategoryId: "", subSubCategoryId: "" });
                             }}
                             placeholder="Select category"
                             className="flex-1"
@@ -477,7 +617,7 @@ export default function ProductFormFields({
                         <SearchableSelect
                             options={subCategories.map(sub => ({ id: String(sub.id), name: sub.name }))}
                             value={product.subCategoryId || ""}
-                            onChange={(val) => setProduct({ ...product, subCategoryId: val })}
+                            onChange={(val) => setProduct({ ...product, subCategoryId: val, subSubCategoryId: "" })}
                             placeholder="Select subcategory"
                             disabled={!product.categoryId}
                             className="flex-1"
@@ -566,6 +706,112 @@ export default function ProductFormFields({
                                     setShowNewSubcategory(false);
                                     setNewSubcategoryName("");
                                     setNewSubcategoryImage("");
+                                }}
+                                className="px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sub-Subcategory</label>
+                {!showNewSubSubcategory ? (
+                    <div className="flex gap-2">
+                        <SearchableSelect
+                            options={subSubCategories.map(sub => ({ id: String(sub.id), name: sub.name }))}
+                            value={product.subSubCategoryId || ""}
+                            onChange={(val) => setProduct({ ...product, subSubCategoryId: val })}
+                            placeholder="Select sub-subcategory"
+                            disabled={!product.subCategoryId}
+                            className="flex-1"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsEditingSubSubcategory(false);
+                                setShowNewSubSubcategory(true);
+                            }}
+                            disabled={!product.subCategoryId}
+                            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Add new sub-subcategory"
+                        >
+                            <Plus className="w-4 h-4" />
+                        </button>
+                        {product.subSubCategoryId && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={handleEditSubSubcategory}
+                                    className="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+                                    title="Edit selected sub-subcategory"
+                                >
+                                    <div className="w-4 h-4 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" /></svg>
+                                    </div>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleDeleteSubSubcategory(product.subSubCategoryId!)}
+                                    className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                                    title="Delete selected sub-subcategory"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    <div className="space-y-2">
+                        <input
+                            type="text"
+                            value={newSubSubcategoryName}
+                            onChange={(e) => setNewSubSubcategoryName(e.target.value)}
+                            placeholder="Enter sub-subcategory name"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            autoFocus
+                        />
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={newSubSubcategoryImage}
+                                onChange={(e) => setNewSubSubcategoryImage(e.target.value)}
+                                placeholder="Enter image URL or upload"
+                                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            />
+                            <label className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer flex items-center justify-center">
+                                <Upload className="w-4 h-4" />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const url = await uploadImage(file);
+                                            if (url) setNewSubSubcategoryImage(url);
+                                        }
+                                    }}
+                                />
+                            </label>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={handleAddSubSubcategory}
+                                disabled={saving}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                            >
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (isEditingSubSubcategory ? "Update" : "Add")}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowNewSubSubcategory(false);
+                                    setNewSubSubcategoryName("");
+                                    setNewSubSubcategoryImage("");
                                 }}
                                 className="px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50"
                             >

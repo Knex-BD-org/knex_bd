@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, Star, Package } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
+import { useRouter } from "next/navigation";
+import { useNotification } from "@/context/NotificationContext";
 
 interface ProductGridCardProps {
     id: string;
@@ -30,13 +32,22 @@ export default function ProductGridCard({
 
     href,
 }: ProductGridCardProps) {
-    const { isInWishlist, toggleWishlist } = useWishlist();
+    const { isInWishlist, toggleWishlist, isLoggedIn } = useWishlist();
+    const router = useRouter();
+    const { showToast } = useNotification();
     const productId = parseInt(id);
     const isWishlisted = isInWishlist(productId);
 
     const handleWishlistClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+
+        if (!isLoggedIn) {
+            showToast("Please login to save products", "info");
+            router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+            return;
+        }
+
         toggleWishlist({
             productId,
             title,
@@ -82,13 +93,13 @@ export default function ProductGridCard({
                 </div>
                 <div className="flex items-center gap-2 mb-2">
                     <span className="text-xl font-bold text-gray-900">Tk {price.toLocaleString()}</span>
-                    {originalPrice && (
+                    {originalPrice && originalPrice > price && (
                         <>
                             <span className="text-sm text-gray-400 line-through">
                                 Tk {originalPrice.toLocaleString()}
                             </span>
                             <span className="text-sm text-indigo-600 font-semibold">
-                                {discount}% off
+                                {Math.round(((originalPrice - price) / originalPrice) * 100)}% off
                             </span>
                         </>
                     )}
