@@ -7,6 +7,7 @@ import ImageResize from 'tiptap-extension-resize-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useState, useEffect } from 'react';
+import { useNotification } from '@/context/NotificationContext';
 import {
     Bold,
     Italic,
@@ -32,6 +33,32 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
     const [showImageModal, setShowImageModal] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [uploadType, setUploadType] = useState<'url' | 'upload'>('url');
+    const [uploading, setUploading] = useState(false);
+    const { showToast } = useNotification();
+
+    const uploadImage = async (file: File): Promise<string | null> => {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+            const res = await fetch(`${API_URL}/upload/single`, {
+                method: "POST",
+                body: formData,
+            });
+            if (res.ok) {
+                const data = await res.json();
+                return data.url;
+            } else {
+                const error = await res.json();
+                showToast(error.error || "Failed to upload image", "error");
+                return null;
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            showToast("Failed to upload image", "error");
+            return null;
+        }
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => setMounted(true), 0);
@@ -41,16 +68,27 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [
-            StarterKit,
-            ImageResize.configure({
-                inline: true,
-                allowBase64: true,
+            StarterKit.configure({
+                bulletList: {
+                    keepMarks: true,
+                    keepAttributes: false,
+                },
+                orderedList: {
+                    keepMarks: true,
+                    keepAttributes: false,
+                },
+                // Disable built-in link to use custom configuration below
+                link: false,
             }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
                     class: 'text-blue-600 underline',
                 },
+            }),
+            ImageResize.configure({
+                inline: true,
+                allowBase64: true,
             }),
             Placeholder.configure({
                 placeholder,
@@ -70,16 +108,21 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
         }
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && editor) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64 = event.target?.result as string;
-                editor.chain().focus().setImage({ src: base64 }).run();
-                setShowImageModal(false);
-            };
-            reader.readAsDataURL(file);
+            setUploading(true);
+            try {
+                const url = await uploadImage(file);
+                if (url) {
+                    editor.chain().focus().setImage({ src: url }).run();
+                    setShowImageModal(false);
+                }
+            } catch (error) {
+                console.error("Error uploading image:", error);
+            } finally {
+                setUploading(false);
+            }
         }
     };
 
@@ -229,8 +272,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
                                 type="button"
                                 onClick={() => setUploadType('url')}
                                 className={`px-4 py-2 font-medium transition-colors ${uploadType === 'url'
-                                        ? 'text-blue-600 border-b-2 border-blue-600'
-                                        : 'text-gray-500 hover:text-gray-700'
+                                    ? 'text-blue-600 border-b-2 border-blue-600'
+                                    : 'text-gray-500 hover:text-gray-700'
                                     }`}
                             >
                                 URL
@@ -239,8 +282,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
                                 type="button"
                                 onClick={() => setUploadType('upload')}
                                 className={`px-4 py-2 font-medium transition-colors ${uploadType === 'upload'
-                                        ? 'text-blue-600 border-b-2 border-blue-600'
-                                        : 'text-gray-500 hover:text-gray-700'
+                                    ? 'text-blue-600 border-b-2 border-blue-600'
+                                    : 'text-gray-500 hover:text-gray-700'
                                     }`}
                             >
                                 Upload
@@ -271,12 +314,21 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Upload Image
                                     </label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileUpload}
-                                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            disabled={uploading}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                                        />
+                                        {uploading && (
+                                            <div className="mt-2 flex items-center gap-2 text-sm text-blue-600">
+                                                <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                                                Uploading...
+                                            </div>
+                                        )}
+                                    </div>
                                     <p className="mt-2 text-xs text-gray-500">
                                         Supported formats: JPG, PNG, GIF, WebP
                                     </p>

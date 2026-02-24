@@ -57,6 +57,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                                     src="https://knex.com.bd/wp-content/uploads/2025/07/cropped-3d-png.png"
                                     alt="KNEX Logo"
                                     fill
+                                    sizes="48px"
+                                    priority
+                                    loading="eager"
                                     className="object-contain"
                                 />
                             </div>
