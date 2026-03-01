@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
 
                     <div className="inline-flex items-center justify-center w-20 h-20  relative">
                         <Image
-                            src="https://knex.com.bd/wp-content/uploads/2025/07/cropped-3d-png.png"
+                            src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png"
                             alt="KNEX Logo"
                             fill
                             sizes="80px"
