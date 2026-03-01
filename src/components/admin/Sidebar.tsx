@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <Link href="/admin/dashboard" className="flex items-center gap-3">
                             <div className="relative w-12 h-12">
                                 <Image
-                                    src="https://knex.com.bd/wp-content/uploads/2025/07/cropped-3d-png.png"
+                                    src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png"
                                     alt="KNEX Logo"
                                     fill
                                     sizes="48px"
