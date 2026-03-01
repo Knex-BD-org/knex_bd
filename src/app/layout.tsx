@@ -64,8 +64,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <link rel="icon" href="knex/src/app/icon.png" />
-
       <body
         className={`${inter.variable} font-sans antialiased`}
         suppressHydrationWarning
