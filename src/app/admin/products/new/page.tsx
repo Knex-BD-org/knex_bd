@@ -55,7 +55,7 @@ export default function AdminNewProduct() {
     const [productType, setProductType] = useState<string>("simple");
     const [showPreview, setShowPreview] = useState(false);
     const [swatchType, setSwatchType] = useState<"color" | "image">("color");
-    const [imageSwatch, setImageSwatch] = useState<{ name: string; image: string; images: string[] }[]>([]);
+    const [imageSwatch, setImageSwatch] = useState<{ name: string; image: string; images: string[]; price?: number }[]>([]);
     const [displayOptions, setDisplayOptions] = useState<string[]>([]);
     const [description, setDescription] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);

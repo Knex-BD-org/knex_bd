@@ -45,7 +45,7 @@ export default function AdminEditProduct() {
     const [productType, setProductType] = useState<string>("simple");
     const [showPreview, setShowPreview] = useState(false);
     const [swatchType, setSwatchType] = useState<"color" | "image">("color");
-    const [imageSwatch, setImageSwatch] = useState<{ name: string; image: string; images: string[] }[]>([]);
+    const [imageSwatch, setImageSwatch] = useState<{ name: string; image: string; images: string[]; price?: number }[]>([]);
     const [displayOptions, setDisplayOptions] = useState<string[]>([]);
     const [description, setDescription] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);
@@ -138,10 +138,11 @@ export default function AdminEditProduct() {
             setVariants(Array.isArray(customVariantsData) ? customVariantsData : []);
 
             // Map API variants (ProductVariant model) to imageSwatch format for color/image swatches
-            const imageSwatchData = (p.variants || []).map((v: { name: string; image: string; images?: string[] }) => ({
+            const imageSwatchData = (p.variants || []).map((v: { name: string; image: string; images?: string[]; price?: number }) => ({
                 name: v.name || "",
                 image: v.image || "",
                 images: v.images && Array.isArray(v.images) ? v.images : (v.image ? [v.image] : []),
+                price: v.price || 0,
             }));
             setImageSwatch(imageSwatchData);
 

@@ -230,6 +230,41 @@ export default function SingleProductPage() {
         return colorPalette[lower] || (lower.startsWith("#") ? lower : "#6b7280");
     };
 
+    const getCurrentPrice = () => {
+        if (!product) return 0;
+        let basePrice = selectedVariant?.price || product.price;
+
+        // Add custom variant price additions
+        if (product.customVariants?.length) {
+            product.customVariants.forEach(cv => {
+                const selectedValue = customSelections[cv.name];
+                if (selectedValue && cv.prices?.[selectedValue]) {
+                    basePrice += cv.prices[selectedValue];
+                }
+            });
+        }
+        return basePrice;
+    };
+
+    const getOriginalPrice = () => {
+        if (!product) return 0;
+        let baseOriginal = product.originalPrice || product.price;
+
+        // Add same custom variant additions to original price to maintain discount ratio visually
+        if (product.customVariants?.length) {
+            product.customVariants.forEach(cv => {
+                const selectedValue = customSelections[cv.name];
+                if (selectedValue && cv.prices?.[selectedValue]) {
+                    baseOriginal += cv.prices[selectedValue];
+                }
+            });
+        }
+        return baseOriginal;
+    };
+
+    const currentPrice = getCurrentPrice();
+    const originalPriceDisplay = getOriginalPrice();
+
     // Handle review submission
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -284,7 +319,7 @@ export default function SingleProductPage() {
             await addToCart({
                 productId: product.id,
                 title: product.title,
-                price: selectedVariant?.price || product.price,
+                price: currentPrice,
                 image: selectedVariant?.image || product.image,
                 slug: product.slug,
                 selectedColor: selectedColor || undefined,
@@ -319,7 +354,7 @@ export default function SingleProductPage() {
             await addToCart({
                 productId: product.id,
                 title: product.title,
-                price: selectedVariant?.price || product.price,
+                price: currentPrice,
                 image: selectedVariant?.image || product.image,
                 slug: product.slug,
                 selectedColor: selectedColor || undefined,
@@ -353,7 +388,7 @@ export default function SingleProductPage() {
             await toggleWishlist({
                 productId: product.id,
                 title: product.title,
-                price: selectedVariant?.price || product.price,
+                price: currentPrice,
                 originalPrice: product.originalPrice,
                 image: selectedVariant?.image || product.image,
                 slug: product.slug,
@@ -380,7 +415,7 @@ export default function SingleProductPage() {
         if (!product) return;
         const shareData = {
             title: product.title,
-            text: `Check out ${product.title} - Tk ${product.price.toLocaleString()}`,
+            text: `Check out ${product.title} - Tk ${currentPrice.toLocaleString()}`,
             url: window.location.href,
         };
 
@@ -546,9 +581,9 @@ export default function SingleProductPage() {
 
                                 {/* Price */}
                                 <div className="flex items-end gap-3 mb-6">
-                                    <span className="text-3xl font-bold text-blue-600">Tk {product.price.toLocaleString()}</span>
-                                    {product.originalPrice > product.price && (
-                                        <span className="text-lg text-gray-400 line-through mb-1">Tk {product.originalPrice.toLocaleString()}</span>
+                                    <span className="text-3xl font-bold text-blue-600">Tk {currentPrice.toLocaleString()}</span>
+                                    {originalPriceDisplay > currentPrice && (
+                                        <span className="text-lg text-gray-400 line-through mb-1">Tk {originalPriceDisplay.toLocaleString()}</span>
                                     )}
                                 </div>
 

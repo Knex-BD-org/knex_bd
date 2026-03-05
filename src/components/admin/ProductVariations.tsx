@@ -10,6 +10,7 @@ interface ImageSwatchItem {
     name: string;
     image: string;
     images: string[];
+    price?: number;
 }
 
 interface ProductVariationsProps {
@@ -134,6 +135,7 @@ export default function ProductVariations({ productType, setProductType, swatchT
                 name: swatchName.trim(),
                 image: swatchImages[0],
                 images: [...swatchImages],
+                price: 0,
             };
             setImageSwatch([...imageSwatch, newSwatch]);
             setSwatchName("");
@@ -320,6 +322,21 @@ export default function ProductVariations({ productType, setProductType, swatchT
                                                     </label>
                                                 </div>
                                                 <p className="text-xs text-gray-500 mt-2">{swatch.images?.length || 1} image(s) • Click any image to set as main</p>
+
+                                                <div className="mt-4 flex items-center gap-2">
+                                                    <label className="text-xs font-medium text-gray-700">Variant Price:</label>
+                                                    <input
+                                                        type="number"
+                                                        value={swatch.price || ""}
+                                                        onChange={(e) => {
+                                                            const updated = [...imageSwatch];
+                                                            updated[idx].price = Number(e.target.value);
+                                                            setImageSwatch(updated);
+                                                        }}
+                                                        placeholder="Price (optional)"
+                                                        className="w-32 px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                                    />
+                                                </div>
                                             </div>
                                         ))}
                                     </div>

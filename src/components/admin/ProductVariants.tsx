@@ -2,8 +2,8 @@
 import { Plus, Trash2, X } from "lucide-react";
 
 interface ProductVariantsProps {
-    variants: { name: string; values: string[] }[];
-    setVariants: (variants: { name: string; values: string[] }[]) => void;
+    variants: { name: string; values: string[]; prices?: { [key: string]: number } }[];
+    setVariants: (variants: { name: string; values: string[]; prices?: { [key: string]: number } }[]) => void;
     features: string[];
     setFeatures: (features: string[]) => void;
 }
@@ -40,15 +40,36 @@ export default function ProductVariants({ variants = [], setVariants, features =
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         </div>
-                        <div className="flex flex-wrap gap-2 mb-2">
+                        <div className="flex flex-wrap gap-3 mb-2">
                             {(variant.values || []).map((val, valIdx) => (
-                                <div key={valIdx} className="flex items-center gap-2 px-3 py-1 bg-white border border-gray-200 rounded-lg">
-                                    <span className="text-sm">{val}</span>
-                                    <X className="w-3 h-3 cursor-pointer text-red-500" onClick={() => {
-                                        const newVariants = [...safeVariants];
-                                        newVariants[vIdx].values = newVariants[vIdx].values.filter((_, i) => i !== valIdx);
-                                        setVariants(newVariants);
-                                    }} />
+                                <div key={valIdx} className="flex flex-col gap-1 bg-white border border-gray-200 rounded-lg p-2">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-sm font-medium">{val}</span>
+                                        <X className="w-3 h-3 cursor-pointer text-red-500 hover:text-red-700" onClick={() => {
+                                            const newVariants = [...safeVariants];
+                                            newVariants[vIdx].values = newVariants[vIdx].values.filter((_, i) => i !== valIdx);
+                                            // Also remove price if exists
+                                            if (newVariants[vIdx].prices) {
+                                                delete newVariants[vIdx].prices[val];
+                                            }
+                                            setVariants(newVariants);
+                                        }} />
+                                    </div>
+                                    <div className="flex items-center gap-1 mt-1">
+                                        <span className="text-[10px] text-gray-500">Price:</span>
+                                        <input
+                                            type="number"
+                                            placeholder="Auto"
+                                            value={variant.prices?.[val] || ""}
+                                            onChange={(e) => {
+                                                const newVariants = [...safeVariants];
+                                                if (!newVariants[vIdx].prices) newVariants[vIdx].prices = {};
+                                                newVariants[vIdx].prices[val] = Number(e.target.value);
+                                                setVariants(newVariants);
+                                            }}
+                                            className="w-16 px-1.5 py-0.5 border border-gray-100 rounded text-[10px] focus:ring-1 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>
