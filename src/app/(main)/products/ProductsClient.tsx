@@ -32,11 +32,21 @@ type Product = {
 
 type Brand = { id: number; name: string; slug: string };
 
-export default function ProductsClient() {
+interface ProductsClientProps {
+    category?: string | null;
+    subcategory?: string | null;
+    subsubcategory?: string | null;
+}
+
+export default function ProductsClient({
+    category = null,
+    subcategory = null,
+    subsubcategory = null,
+}: ProductsClientProps) {
     const searchParams = useSearchParams();
-    const categoryParam = searchParams.get("category");
-    const subcategoryParam = searchParams.get("subcategory");
-    const subsubcategoryParam = searchParams.get("subsubcategory");
+    const categoryParam = category || searchParams.get("category");
+    const subcategoryParam = subcategory || searchParams.get("subcategory");
+    const subsubcategoryParam = subsubcategory || searchParams.get("subsubcategory");
 
     const [products, setProducts] = useState<Product[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);

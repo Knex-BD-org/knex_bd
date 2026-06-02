@@ -181,7 +181,7 @@ export default function MobileFilters({
                     {/* Sub-Subcategories */}
                     {subcategoryParam && subsubcategories.length > 0 && (
                         <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Sub-Subcategories</h3>
+                            <h3 className="font-semibold mb-3">Sub-Sub Categories</h3>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                                 {subsubcategories.map((subSub) => (
                                     <Link

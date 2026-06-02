@@ -30,10 +30,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     };
 }
 
-export default async function ProductsPage() {
+export default async function ProductsPage({ searchParams }: Props) {
+    const sParams = await searchParams;
     return (
         <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
-            <ProductsClient />
+            <ProductsClient
+                category={sParams.category || null}
+                subcategory={sParams.subcategory || null}
+                subsubcategory={sParams.subsubcategory || null}
+            />
         </Suspense>
     );
 }
