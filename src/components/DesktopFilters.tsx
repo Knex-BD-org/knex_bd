@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { filters } from "@/data/productsData";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -60,6 +61,7 @@ export default function DesktopFilters({
     onClearAll,
     getBrandName,
 }: DesktopFiltersProps) {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
@@ -92,9 +94,9 @@ export default function DesktopFilters({
         <aside className="hidden lg:block w-64 shrink-0">
             <div className="bg-white rounded-lg p-4 sticky top-20">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold">Filters</h2>
+                    <h2 className="text-lg font-bold">{t("filters")}</h2>
                     <button onClick={onClearAll} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
-                        CLEAR ALL
+                        {t("clear_all_upper")}
                     </button>
                 </div>
 
@@ -106,19 +108,26 @@ export default function DesktopFilters({
                                 <X size={14} />
                             </button>
                         ))}
-                        {selectedPriceRange.map((index) => (
-                            <button key={index} onClick={() => onTogglePriceRange(index)} className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">
-                                {filters.priceRanges[index].label}
-                                <X size={14} />
-                            </button>
-                        ))}
+                        {selectedPriceRange.map((index) => {
+                            const numIndex = Number(index);
+                            const range = Number.isInteger(numIndex) && numIndex >= 0 && numIndex < filters.priceRanges.length
+                                ? filters.priceRanges[numIndex]
+                                : null;
+                            if (!range) return null;
+                            return (
+                                <button key={index} onClick={() => onTogglePriceRange(index)} className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">
+                                    {range.label}
+                                    <X size={14} />
+                                </button>
+                            );
+                        })}
                     </div>
                 )}
 
                 {/* Categories Section */}
                 {categories.length > 0 && (
                     <div className="mb-6">
-                        <h3 className="font-semibold mb-3">Categories</h3>
+                        <h3 className="font-semibold mb-3">{t("categories")}</h3>
                         <div className="space-y-1 max-h-48 overflow-y-auto">
                             {categories.map((cat) => (
                                 <Link
@@ -139,7 +148,7 @@ export default function DesktopFilters({
                 {/* Subcategories Section - Only show when a category is selected */}
                 {categoryParam && subcategories.length > 0 && (
                     <div className="mb-6">
-                        <h3 className="font-semibold mb-3">Sub Categories</h3>
+                        <h3 className="font-semibold mb-3">{t("sub_categories")}</h3>
                         <div className="space-y-1 max-h-48 overflow-y-auto">
                             {subcategories.map((sub) => (
                                 <Link
@@ -160,7 +169,7 @@ export default function DesktopFilters({
                 {/* Sub-Subcategories Section - Only show when a subcategory is selected */}
                 {subcategoryParam && subsubcategories.length > 0 && (
                     <div className="mb-6">
-                        <h3 className="font-semibold mb-3">Sub-Sub Categories</h3>
+                        <h3 className="font-semibold mb-3">{t("sub_sub_categories")}</h3>
                         <div className="space-y-1 max-h-48 overflow-y-auto">
                             {subsubcategories.map((subSub) => (
                                 <Link
@@ -180,7 +189,7 @@ export default function DesktopFilters({
 
                 {brands.length > 0 && (
                     <div className="mb-6">
-                        <h3 className="font-semibold mb-3">Brand</h3>
+                        <h3 className="font-semibold mb-3">{t("brand")}</h3>
                         <div className="space-y-2 max-h-48 overflow-y-auto">
                             {brands.map((brand) => (
                                 <label key={brand.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -193,7 +202,7 @@ export default function DesktopFilters({
                 )}
 
                 <div>
-                    <h3 className="font-semibold mb-3">Price Range</h3>
+                    <h3 className="font-semibold mb-3">{t("price_range")}</h3>
                     <div className="space-y-2">
                         {filters.priceRanges.map((range, index) => (
                             <label key={index} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { filters } from "@/data/productsData";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -66,6 +67,7 @@ export default function MobileFilters({
     onClearTemp,
     getBrandName,
 }: MobileFiltersProps) {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
@@ -102,7 +104,7 @@ export default function MobileFilters({
 
             <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto flex flex-col">
                 <div className="sticky top-0 bg-white border-b z-10 px-4 py-3 flex items-center justify-between">
-                    <h2 className="text-lg font-bold">Filters</h2>
+                    <h2 className="text-lg font-bold">{t("filters")}</h2>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
                         <X size={20} />
                     </button>
@@ -112,9 +114,9 @@ export default function MobileFilters({
                     {(tempBrands.length > 0 || tempPriceRange.length > 0) && (
                         <div className="mb-4">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium">Applied</span>
+                                <span className="text-sm font-medium">{t("applied")}</span>
                                 <button onClick={onClearTemp} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
-                                    Clear All
+                                    {t("clear_all")}
                                 </button>
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -124,12 +126,19 @@ export default function MobileFilters({
                                         <X size={14} />
                                     </button>
                                 ))}
-                                {tempPriceRange.map((index) => (
-                                    <button key={index} onClick={() => onTogglePriceRange(index)} className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">
-                                        {filters.priceRanges[index].label}
-                                        <X size={14} />
-                                    </button>
-                                ))}
+                                {tempPriceRange.map((index) => {
+                                    const numIndex = Number(index);
+                                    const range = Number.isInteger(numIndex) && numIndex >= 0 && numIndex < filters.priceRanges.length
+                                        ? filters.priceRanges[numIndex]
+                                        : null;
+                                    if (!range) return null;
+                                    return (
+                                        <button key={index} onClick={() => onTogglePriceRange(index)} className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">
+                                            {range.label}
+                                            <X size={14} />
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
@@ -137,7 +146,7 @@ export default function MobileFilters({
                     {/* Categories */}
                     {categories.length > 0 && (
                         <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Categories</h3>
+                            <h3 className="font-semibold mb-3">{t("categories")}</h3>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                                 {categories.map((cat) => (
                                     <Link
@@ -159,7 +168,7 @@ export default function MobileFilters({
                     {/* Subcategories */}
                     {categoryParam && subcategories.length > 0 && (
                         <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Subcategories</h3>
+                            <h3 className="font-semibold mb-3">{t("subcategories")}</h3>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                                 {subcategories.map((sub) => (
                                     <Link
@@ -181,7 +190,7 @@ export default function MobileFilters({
                     {/* Sub-Subcategories */}
                     {subcategoryParam && subsubcategories.length > 0 && (
                         <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Sub-Sub Categories</h3>
+                            <h3 className="font-semibold mb-3">{t("sub_sub_categories")}</h3>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                                 {subsubcategories.map((subSub) => (
                                     <Link
@@ -202,7 +211,7 @@ export default function MobileFilters({
 
                     {brands.length > 0 && (
                         <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Brand</h3>
+                            <h3 className="font-semibold mb-3">{t("brand")}</h3>
                             <div className="space-y-2 max-h-48 overflow-y-auto">
                                 {brands.map((brand) => (
                                     <label key={brand.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -215,7 +224,7 @@ export default function MobileFilters({
                     )}
 
                     <div>
-                        <h3 className="font-semibold mb-3">Price Range</h3>
+                        <h3 className="font-semibold mb-3">{t("price_range")}</h3>
                         <div className="space-y-2">
                             {filters.priceRanges.map((range, index) => (
                                 <label key={index} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -229,7 +238,7 @@ export default function MobileFilters({
 
                 <div className="sticky bottom-0 bg-white border-t p-4">
                     <button onClick={onApply} className="w-full bg-linear-to-r from-yellow-400 via-blue-500 to-green-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 cursor-pointer">
-                        Apply Filters
+                        {t("apply_filters")}
                     </button>
                 </div>
             </div>
