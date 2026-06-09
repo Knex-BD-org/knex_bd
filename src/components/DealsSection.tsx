@@ -32,7 +32,7 @@ export default function DealsSection({ title, items, viewAllHref = "/products" }
                         href={item.href || viewAllHref}
                         className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all"
                     >
-                        <div className="aspect-[4/3] bg-gray-50 relative">
+                        <div className="aspect-4/3 bg-gray-50 relative">
                             <Image src={item.image} alt={item.label} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover" />
                         </div>
                         <div className="p-2">

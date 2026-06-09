@@ -5,6 +5,7 @@ import { X, User, Phone, Mail, MapPin, Wallet, LogIn, Loader2, CheckCircle, XCir
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -27,6 +28,7 @@ interface CheckoutModalProps {
 }
 
 export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalProps) {
+    const { t } = useTranslation();
     const router = useRouter();
     const { refreshCart } = useCart();
 
@@ -206,9 +208,9 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         <LogIn size={36} className="text-white" />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">Login Required</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">{t("login_required")}</h2>
                     <p className="text-gray-600 mb-6">
-                        Please login or create an account to complete your purchase. Your cart will be saved.
+                        {t("login_required_desc")}
                     </p>
 
                     <div className="space-y-3">
@@ -217,19 +219,19 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             onClick={onClose}
                             className="block w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
                         >
-                            Login
+                            {t("login")}
                         </Link>
                         <Link
                             href="/register"
                             onClick={onClose}
                             className="block w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
                         >
-                            Create Account
+                            {t("create_account")}
                         </Link>
                     </div>
 
                     <p className="text-sm text-gray-500 mt-6">
-                        Your cart items are saved and will be available after login.
+                        {t("cart_saved_desc")}
                     </p>
                 </div>
             </div>
@@ -256,15 +258,15 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         <CheckCircle size={48} className="text-green-600" />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">Order Placed!</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">{t("order_placed")}</h2>
                     <p className="text-gray-600 mb-2">
-                        Your order has been placed successfully.
+                        {t("order_success_desc")}
                     </p>
                     <p className="text-lg font-semibold text-blue-600 mb-6">
-                        Order Number: {orderNumber}
+                        {t("order_number_label")} {orderNumber}
                     </p>
                     <p className="text-sm text-gray-500 mb-6">
-                        We will contact you shortly to confirm your order.
+                        {t("contact_confirm_desc")}
                     </p>
 
                     <div className="space-y-3">
@@ -275,7 +277,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             }}
                             className="block w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition cursor-pointer"
                         >
-                            View My Orders
+                            {t("view_my_orders")}
                         </button>
                         <button
                             onClick={() => {
@@ -284,7 +286,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             }}
                             className="block w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer"
                         >
-                            Continue Shopping
+                            {t("continue_shopping")}
                         </button>
                     </div>
                 </div>
@@ -304,8 +306,8 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         <Image src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png" alt="KNEX" fill className="object-contain" />
                     </div>
                     <div>
-                        <h2 className="text-xl md:text-2xl font-bold text-gray-900">Checkout</h2>
-                        <p className="text-xs text-gray-500">Complete your order</p>
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t("checkout")}</h2>
+                        <p className="text-xs text-gray-500">{t("complete_your_order")}</p>
                     </div>
                 </div>
 
@@ -320,7 +322,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                 {savedAddresses.length > 0 && (
                     <div className="mb-4">
                         <p className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                            <MapPin size={16} className="text-blue-500" /> Delivery Address
+                            <MapPin size={16} className="text-blue-500" /> {t("delivery_address")}
                         </p>
                         <div className="relative">
                             <button
@@ -332,8 +334,8 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                     <MapPin size={18} className="text-blue-500 shrink-0" />
                                     <span className="text-sm text-gray-700 truncate">
                                         {selectedAddressId === "custom"
-                                            ? "Enter new address"
-                                            : savedAddresses.find((a) => a.id === selectedAddressId)?.address || "Select address"}
+                                            ? t("enter_new_address")
+                                            : savedAddresses.find((a) => a.id === selectedAddressId)?.address || t("select_address")}
                                     </span>
                                 </div>
                                 <ChevronDown size={18} className={`text-gray-500 shrink-0 transition-transform ${showAddressSelector ? "rotate-180" : ""}`} />
@@ -354,7 +356,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                                 <p className="text-sm font-medium text-gray-800 flex items-center gap-2">
                                                     {addr.name}
                                                     {addr.isDefault && (
-                                                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Default</span>
+                                                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t("default")}</span>
                                                     )}
                                                 </p>
                                                 <p className="text-xs text-gray-500 truncate">{addr.address}, {addr.city}</p>
@@ -369,7 +371,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                             }`}
                                     >
                                         <Plus size={16} className="text-green-500" />
-                                        <span className="text-sm text-gray-700">Enter different address</span>
+                                        <span className="text-sm text-gray-700">{t("enter_different_address")}</span>
                                     </button>
                                 </div>
                             )}
@@ -380,7 +382,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                 {loadingAddresses && (
                     <div className="mb-4 flex items-center gap-2 text-sm text-gray-500">
                         <Loader2 size={16} className="animate-spin" />
-                        Loading saved addresses...
+                        {t("loading_saved_addresses")}
                     </div>
                 )}
 
@@ -448,20 +450,20 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
                     {/* Delivery Location */}
                     <div>
-                        <p className="text-sm font-semibold text-gray-700 mb-3">Delivery Location</p>
+                        <p className="text-sm font-semibold text-gray-700 mb-3">{t("delivery_location")}</p>
                         <div className="grid grid-cols-2 gap-3">
                             <label className="flex items-center gap-3 px-4 py-3 border-2 rounded-xl cursor-pointer hover:bg-blue-50 transition" style={{ borderColor: location === "inside" ? "#3b82f6" : "#e5e7eb" }}>
                                 <input type="radio" name="location" checked={location === "inside"} onChange={() => setLocation("inside")} className="w-4 h-4 text-blue-600 shrink-0" />
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-sm">Inside Dhaka</p>
-                                    <p className="text-xs text-gray-500">Delivery: Tk 80</p>
+                                    <p className="font-medium text-sm">{t("inside_dhaka")}</p>
+                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 80 })}</p>
                                 </div>
                             </label>
                             <label className="flex items-center gap-3 px-4 py-3 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition" style={{ borderColor: location === "outside" ? "#22c55e" : "#e5e7eb" }}>
                                 <input type="radio" name="location" checked={location === "outside"} onChange={() => setLocation("outside")} className="w-4 h-4 text-green-600 shrink-0" />
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-sm">Outside Dhaka</p>
-                                    <p className="text-xs text-gray-500">Delivery: Tk 150</p>
+                                    <p className="font-medium text-sm">{t("outside_dhaka")}</p>
+                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 150 })}</p>
                                 </div>
                             </label>
                         </div>
@@ -470,15 +472,15 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                     {/* Payment Method */}
                     <div>
                         <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                            <Wallet size={16} className="text-yellow-600" /> Payment Method
+                            <Wallet size={16} className="text-yellow-600" /> {t("payment_method")}
                         </p>
                         <div className="grid grid-cols-1 gap-3">
                             {/* Cash on Delivery - Active */}
                             <label className="flex items-center gap-3 px-4 py-4 border-2 rounded-xl cursor-pointer hover:border-blue-400 transition" style={{ borderColor: paymentMethod === "cod" ? "#3b82f6" : "#e5e7eb", backgroundColor: paymentMethod === "cod" ? "#eff6ff" : "transparent" }}>
                                 <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="w-4 h-4" />
                                 <div>
-                                    <p className="font-semibold text-sm">Cash on Delivery</p>
-                                    <p className="text-xs text-gray-500">Pay when you receive</p>
+                                    <p className="font-semibold text-sm">{t("cash_on_delivery")}</p>
+                                    <p className="text-xs text-gray-500">{t("pay_when_you_receive")}</p>
                                 </div>
                             </label>
                         </div>
@@ -487,16 +489,16 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                     {/* Order Summary */}
                     <div className="bg-linear-to-r from-blue-50 to-green-50 rounded-xl p-5 border border-blue-100 mt-2">
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm text-gray-600">Subtotal</span>
-                            <span className="font-medium text-sm">Tk {total.toLocaleString()}</span>
+                            <span className="text-sm text-gray-600">{t("subtotal")}</span>
+                            <span className="font-medium text-sm">{t("currency_amount", { amount: total.toLocaleString() })}</span>
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm text-gray-600">Delivery</span>
-                            <span className="font-medium text-sm text-green-600">Tk {deliveryCharge}</span>
+                            <span className="text-sm text-gray-600">{t("delivery")}</span>
+                            <span className="font-medium text-sm text-green-600">{t("currency_amount", { amount: deliveryCharge })}</span>
                         </div>
                         <div className="border-t border-gray-300 pt-3 mt-2 flex justify-between items-center">
-                            <span className="font-bold text-gray-900 text-base">Total</span>
-                            <span className="text-2xl font-bold text-blue-600">Tk {finalTotal.toLocaleString()}</span>
+                            <span className="font-bold text-gray-900 text-base">{t("total")}</span>
+                            <span className="text-2xl font-bold text-blue-600">{t("currency_amount", { amount: finalTotal.toLocaleString() })}</span>
                         </div>
                     </div>
 
@@ -508,10 +510,10 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         {isSubmitting ? (
                             <>
                                 <Loader2 size={20} className="animate-spin" />
-                                Placing Order...
+                                {t("placing_order")}
                             </>
                         ) : (
-                            "Place Order"
+                            t("place_order")
                         )}
                     </button>
                 </form>

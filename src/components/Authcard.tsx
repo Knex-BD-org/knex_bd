@@ -11,7 +11,7 @@ interface Props {
 
 export default function AuthCard({ title, subtitle, children }: Props) {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-100 p-4">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-blue-100 p-4">
             <div className="w-full max-w-md mx-auto bg-white/90 backdrop-blur-md border border-white/40 shadow-2xl rounded-3xl p-6 sm:p-8 md:p-10">
                 <div className="flex flex-col items-center">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 relative">

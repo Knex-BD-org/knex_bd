@@ -20,8 +20,10 @@ export default function ProductCard({ title, price, iconName, image, discount, h
 
     return (
         <Link href={href} className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all group">
-            <div className="aspect-square bg-gray-50  relative overflow-hidden">
-                <div className="w-full h-full bg-gray-50 rounded-lg flex items-center justify-center relative">
+
+            <div className="aspect-square  relative overflow-hidden">
+                <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center relative">
+
                     {IconComponent ? (
                         <IconComponent className="w-16 h-16 text-gray-500" />
                     ) : image ? (
