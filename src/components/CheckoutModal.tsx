@@ -292,7 +292,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                 </div>
 
                 {!isLoggedIn && !checkingAuth && (
-                    <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl flex items-start gap-3">
+                    <div className="mb-6 p-4 bg-linear-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl flex items-start gap-3">
                         <LogIn size={18} className="text-blue-600 mt-0.5 shrink-0" />
                         <div>
                             <p className="text-sm font-semibold text-gray-900">{t("want_saved_addresses", "Want faster checkout?")}</p>
