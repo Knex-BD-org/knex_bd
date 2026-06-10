@@ -21,6 +21,8 @@ export default function AuthCard({ title, subtitle, children }: Props) {
                             fill
                             sizes="80px"
                             className="object-contain"
+                            loading="eager"
+                            priority
                         />
                     </div>
 

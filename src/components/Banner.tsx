@@ -36,7 +36,7 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
     if (!images || images.length === 0) return null;
 
     return (
-        <div className="relative overflow-hidden rounded-2xl group w-full aspect-4/1 md:aspect-5/1 bg-[#f2f6ff]">
+        <div suppressHydrationWarning className="relative overflow-hidden rounded-2xl group w-full aspect-4/1 md:aspect-5/1 bg-[#f2f6ff]">
             <div
                 className="flex transition-transform duration-700 ease-in-out h-full"
                 style={{ transform: `translateX(-${current * 100}%)` }}
@@ -84,7 +84,10 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
                                     <div
                                         key={key}
                                         className="absolute inset-0 bg-blue-600 origin-left"
-                                        style={{ animation: `fillBar ${interval}ms linear` }}
+                                        style={{
+                                            animation: `fillBar ${interval}ms linear`,
+                                            transformOrigin: 'left',
+                                        } as React.CSSProperties & { animation: string }}
                                     />
                                 )}
                             </button>
@@ -92,7 +95,7 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
                     </div>
                 </>
             )}
-            <style jsx>{`
+            <style>{`
                 @keyframes fillBar {
                     from { transform: scaleX(0); }
                     to { transform: scaleX(1); }

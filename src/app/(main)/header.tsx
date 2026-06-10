@@ -89,6 +89,8 @@ export default function Header() {
                             width={300}       // base width
                             height={100}      // base height
                             className="h-16 w-auto md:h-16 lg:h-20 xl:h-24"
+                            loading="eager"
+                            priority
                         />
                     </Link>
 

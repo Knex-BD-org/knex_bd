@@ -30,7 +30,7 @@ interface CheckoutModalProps {
 export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalProps) {
     const { t } = useTranslation();
     const router = useRouter();
-    const { refreshCart } = useCart();
+    const { refreshCart, items } = useCart();
 
     const [location, setLocation] = useState<"inside" | "outside">("inside");
     const [paymentMethod, setPaymentMethod] = useState<"cod" /* | "bkash" | "nagad" */>("cod");
@@ -153,20 +153,43 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
         try {
             const token = localStorage.getItem("userToken");
-            const res = await fetch(`${API}/orders`, {
+
+            let endpoint = `${API}/orders`;
+            const headers: any = {
+                "Content-Type": "application/json",
+            };
+
+            const body: any = {
+                customerName: customerName.trim(),
+                customerEmail: customerEmail.trim(),
+                customerPhone: customerPhone.trim(),
+                deliveryAddress: deliveryAddress.trim(),
+                deliveryArea: location,
+                paymentMethod,
+            };
+
+            // For guest checkout, use guest endpoint and include cart items
+            if (!token) {
+                endpoint = `${API}/orders/guest/create`;
+                body.items = items.map(item => ({
+                    productId: item.productId,
+                    title: item.title,
+                    price: item.price,
+                    quantity: item.quantity,
+                    image: item.image,
+                    selectedColor: item.selectedColor || null,
+                    selectedSize: item.selectedSize || null,
+                    selectedVariant: item.selectedVariant || null,
+                    customSelections: item.customSelections || null,
+                }));
+            } else {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
+            const res = await fetch(endpoint, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    customerName: customerName.trim(),
-                    customerEmail: customerEmail.trim(),
-                    customerPhone: customerPhone.trim(),
-                    deliveryAddress: deliveryAddress.trim(),
-                    deliveryArea: location,
-                    paymentMethod,
-                }),
+                headers,
+                body: JSON.stringify(body),
             });
 
             const data = await res.json();
@@ -194,49 +217,6 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             setIsSubmitting(false);
         }
     };
-
-    // Show login prompt if not logged in
-    if (!checkingAuth && !isLoggedIn) {
-        return (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 relative text-center">
-                    <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer z-10">
-                        <X size={24} />
-                    </button>
-
-                    <div className="w-20 h-20 bg-linear-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <LogIn size={36} className="text-white" />
-                    </div>
-
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">{t("login_required")}</h2>
-                    <p className="text-gray-600 mb-6">
-                        {t("login_required_desc")}
-                    </p>
-
-                    <div className="space-y-3">
-                        <Link
-                            href="/login"
-                            onClick={onClose}
-                            className="block w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
-                        >
-                            {t("login")}
-                        </Link>
-                        <Link
-                            href="/register"
-                            onClick={onClose}
-                            className="block w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
-                        >
-                            {t("create_account")}
-                        </Link>
-                    </div>
-
-                    <p className="text-sm text-gray-500 mt-6">
-                        {t("cart_saved_desc")}
-                    </p>
-                </div>
-            </div>
-        );
-    }
 
     // Show loading while checking auth
     if (checkingAuth) {
@@ -303,13 +283,37 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 relative shrink-0">
-                        <Image src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png" alt="KNEX" fill className="object-contain" />
+                        <Image src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png" alt="KNEX" fill className="object-contain" loading="eager" />
                     </div>
                     <div>
                         <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t("checkout")}</h2>
                         <p className="text-xs text-gray-500">{t("complete_your_order")}</p>
                     </div>
                 </div>
+
+                {!isLoggedIn && !checkingAuth && (
+                    <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl flex items-start gap-3">
+                        <LogIn size={18} className="text-blue-600 mt-0.5 shrink-0" />
+                        <div>
+                            <p className="text-sm font-semibold text-gray-900">{t("want_saved_addresses", "Want faster checkout?")}</p>
+                            <p className="text-xs text-gray-600 mb-2">{t("login_to_save_addresses", "Login to save addresses and order history")}</p>
+                            <div className="flex gap-2">
+                                <Link
+                                    href="/login"
+                                    className="text-xs px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    {t("login", "Login")}
+                                </Link>
+                                <Link
+                                    href="/register"
+                                    className="text-xs px-3 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                                >
+                                    {t("register", "Register")}
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {error && (
                     <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
@@ -424,8 +428,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             <Mail size={18} className="text-yellow-600 shrink-0" />
                             <input
                                 type="email"
-                                placeholder="Email Address"
-                                required
+                                placeholder="Email Address (Optional)"
                                 value={customerEmail}
                                 onChange={(e) => setCustomerEmail(e.target.value)}
                                 className="w-full bg-transparent outline-none text-sm"
