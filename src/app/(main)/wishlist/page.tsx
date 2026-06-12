@@ -18,9 +18,7 @@ export default function WishlistPage() {
     const [addingToCartId, setAddingToCartId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (isLoaded && !isLoggedIn) {
-            router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
-        }
+        // Removed login redirect to allow guest wishlist
     }, [isLoaded, isLoggedIn, router]);
 
     const handleAddToCart = async (item: typeof wishlistItems[0]) => {

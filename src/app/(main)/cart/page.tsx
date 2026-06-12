@@ -14,9 +14,7 @@ export default function CartPage() {
     const router = useRouter();
 
     useEffect(() => {
-        if (isLoaded && !isLoggedIn) {
-            router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
-        }
+        // Removed login redirect to allow guest checkout
     }, [isLoaded, isLoggedIn, router]);
 
     const subtotal = getCartTotal();

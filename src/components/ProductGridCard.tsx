@@ -42,12 +42,6 @@ export default function ProductGridCard({
         e.preventDefault();
         e.stopPropagation();
 
-        if (!isLoggedIn) {
-            showToast("Please login to save products", "info");
-            router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
-            return;
-        }
-
         toggleWishlist({
             productId,
             title,

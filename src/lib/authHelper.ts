@@ -105,9 +105,13 @@ const syncGuestData = async (token: string): Promise<void> => {
                         Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
-                        items: items.map((item: { productId: number; quantity: number }) => ({
+                        items: items.map((item: any) => ({
                             productId: item.productId,
                             quantity: item.quantity,
+                            selectedColor: item.selectedColor,
+                            selectedSize: item.selectedSize,
+                            selectedVariant: item.selectedVariant,
+                            customSelections: item.customSelections,
                         })),
                     }),
                 });
@@ -127,7 +131,13 @@ const syncGuestData = async (token: string): Promise<void> => {
                         Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
-                        items: items.map((item: { productId: number }) => item.productId),
+                        items: items.map((item: any) => ({
+                            productId: item.productId,
+                            selectedColor: item.selectedColor,
+                            selectedSize: item.selectedSize,
+                            selectedVariant: item.selectedVariant,
+                            customSelections: item.customSelections,
+                        })),
                     }),
                 });
                 localStorage.removeItem("knex_guest_wishlist");
