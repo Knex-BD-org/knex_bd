@@ -84,7 +84,7 @@ export default function Header() {
                     <button onClick={() => setMenuOpen(true)} className="md:hidden"><Menu size={24} /></button>
                     <Link href="/">
                         <Image
-                            src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png"
+                            src="https://res.cloudinary.com/druwzzjp3/image/upload/v1781161177/3d-png_hbgcsh.png"
                             alt="KNEX.BD"
                             width={300}       // base width
                             height={100}      // base height
