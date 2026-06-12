@@ -30,7 +30,15 @@ interface TopbarProps {
 }
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
-    const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+    const [adminUser] = useState<AdminUser | null>(() => {
+        if (typeof window === "undefined") return null;
+        try {
+            const stored = localStorage.getItem("adminUser");
+            return stored ? JSON.parse(stored) : null;
+        } catch {
+            return null;
+        }
+    });
     const [notifications, setNotifications] = useState<OrderNotification[]>([]);
     const [pendingCount, setPendingCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -39,17 +47,6 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
     const router = useRouter();
 
     useEffect(() => {
-        // Get admin user from localStorage (set during admin login)
-        const storedAdmin = localStorage.getItem("adminUser");
-        if (storedAdmin) {
-            try {
-                setAdminUser(JSON.parse(storedAdmin));
-            } catch (e) {
-                console.error("Error parsing admin user:", e);
-            }
-        }
-
-        // Create audio element for notification sound
         audioRef.current = new Audio("/notification.mp3");
     }, []);
 

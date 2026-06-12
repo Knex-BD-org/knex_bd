@@ -33,7 +33,6 @@ export default function ProductVariations({ productType, setProductType, swatchT
     const [uploadingGalleryImage, setUploadingGalleryImage] = useState<number | null>(null);
     const [swatchName, setSwatchName] = useState("");
     const [swatchImages, setSwatchImages] = useState<string[]>([]);
-    const [editingSwatchIndex, setEditingSwatchIndex] = useState<number | null>(null);
     const [sessionUrls, setSessionUrls] = useState<Set<string>>(new Set());
     const { showToast } = useNotification();
 
@@ -78,7 +77,7 @@ export default function ProductVariations({ productType, setProductType, swatchT
 
             if (res.ok) {
                 const data = await res.json();
-                const urls = data.images.map((img: any) => img.url);
+                const urls = data.images.map((img: { url: string }) => img.url);
                 setSessionUrls(prev => {
                     const next = new Set(prev);
                     urls.forEach((u: string) => next.add(u));

@@ -169,7 +169,7 @@ export default function ProductFormFields({
         const cat = categories.find(c => String(c.id) === String(product.categoryId));
         if (cat) {
             setNewCategoryName(cat.name);
-            let img = (cat as any).image || (cat as any).icon || "";
+            let img = cat.image || cat.icon || "";
             if (img.startsWith('/uploads')) {
                 const baseUrl = API_URL.replace('/api', '');
                 img = `${baseUrl}${img}`;
@@ -284,7 +284,7 @@ export default function ProductFormFields({
     };
 
     const handleEditSubcategory = () => {
-        const sub = (selectedCategory?.subCategories as any)?.find((s: any) => String(s.id) === String(product.subCategoryId));
+        const sub = selectedCategory?.subCategories?.find(s => String(s.id) === String(product.subCategoryId));
         if (sub) {
             setNewSubcategoryName(sub.name);
             let img = sub.image || "";

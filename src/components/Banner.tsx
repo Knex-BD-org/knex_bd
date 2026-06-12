@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface BannerItem {
     url: string;
@@ -43,10 +44,12 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
             >
                 {images.map((image, idx) => {
                     const content = (
-                        <img
+                        <Image
                             src={image.url}
                             alt={`Banner ${idx + 1}`}
-                            className="w-full h-full object-contain cursor-pointer block"
+                            fill
+                            className="object-contain cursor-pointer"
+                            priority={idx === 0}
                         />
                     );
 

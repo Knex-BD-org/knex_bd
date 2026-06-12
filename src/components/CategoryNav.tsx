@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -149,9 +150,9 @@ export default function CategoryNav() {
                                     className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors duration-150"
                                 >
                                     <div className="relative w-8 h-8 shrink-0">
-                                        <img
+                                        <Image
                                             src={(() => {
-                                                let img = sub.image || "https://knex.com.bd/wp-content/uploads/2025/11/Electronicss-removebg-preview.png";
+                                                const img = sub.image || "https://knex.com.bd/wp-content/uploads/2025/11/Electronicss-removebg-preview.png";
                                                 if (img.startsWith('/uploads')) {
                                                     const baseUrl = API.replace('/api', '');
                                                     return `${baseUrl}${img}`;
@@ -159,10 +160,8 @@ export default function CategoryNav() {
                                                 return img;
                                             })()}
                                             alt={sub.name}
-                                            className="w-full h-full object-contain"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = "https://knex.com.bd/wp-content/uploads/2025/11/Electronicss-removebg-preview.png";
-                                            }}
+                                            sizes="32px"
+                                            className="object-contain"
                                         />
                                     </div>
                                     <span className="truncate">{sub.name}</span>

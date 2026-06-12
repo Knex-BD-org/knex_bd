@@ -44,8 +44,6 @@ export default function SearchableSelect({
 
         if (isOpen) {
             document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            setSearchQuery("");
         }
 
         return () => {
@@ -57,7 +55,12 @@ export default function SearchableSelect({
         <div className={`relative ${className}`} ref={containerRef}>
             <button
                 type="button"
-                onClick={() => !disabled && setIsOpen(!isOpen)}
+                onClick={() => {
+                    if (!disabled) {
+                        setIsOpen(!isOpen);
+                        if (!isOpen) setSearchQuery("");
+                    }
+                }}
                 className={`w-full flex items-center justify-between px-4 py-2 bg-white border border-gray-200 rounded-lg text-left focus:ring-2 focus:ring-blue-500 outline-none transition-all ${disabled ? "bg-gray-50 cursor-not-allowed text-gray-400" : "hover:border-gray-300"
                     }`}
             >
@@ -94,6 +97,7 @@ export default function SearchableSelect({
                                     onClick={() => {
                                         onChange(String(option.id));
                                         setIsOpen(false);
+                                        setSearchQuery("");
                                     }}
                                     className={`w-full flex items-center justify-between px-4 py-2 text-sm text-left hover:bg-blue-50 transition-colors ${String(option.id) === String(value) ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700"
                                         }`}

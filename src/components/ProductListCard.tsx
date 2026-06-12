@@ -28,7 +28,7 @@ export default function ProductListCard({
     title,
     price,
     originalPrice,
-    discount,
+    // discount,
     rating,
     totalRatings,
     image,

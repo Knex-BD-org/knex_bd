@@ -25,7 +25,7 @@ export default function ProductGridCard({
     title,
     price,
     originalPrice,
-    discount,
+    // discount,
     rating,
     totalRatings,
     image,

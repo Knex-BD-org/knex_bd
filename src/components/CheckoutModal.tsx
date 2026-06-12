@@ -27,6 +27,26 @@ interface CheckoutModalProps {
     total: number;
 }
 
+interface OrderBody {
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string;
+    deliveryAddress: string;
+    deliveryArea: "inside" | "outside";
+    paymentMethod: string;
+    items?: Array<{
+        productId: number;
+        title: string;
+        price: number;
+        quantity: number;
+        image: string;
+        selectedColor: string | null;
+        selectedSize: string | null;
+        selectedVariant: unknown;
+        customSelections: unknown;
+    }>;
+}
+
 export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalProps) {
     const { t } = useTranslation();
     const router = useRouter();
@@ -133,19 +153,25 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
     // Handle order submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return; // Prevent double submission
         setError("");
 
         // Validation
+        const phoneRegex = /^(?:\+88|01)[3-9]\d{8}$/;
         if (!customerName.trim()) {
             setError("Please enter your name");
             return;
         }
-        if (!customerPhone.trim()) {
-            setError("Please enter your phone number");
+        if (!customerPhone.trim() || !phoneRegex.test(customerPhone.trim())) {
+            setError("Please enter a valid Bangladeshi phone number");
             return;
         }
-        if (!deliveryAddress.trim()) {
-            setError("Please enter your delivery address");
+        if (!deliveryAddress.trim() || deliveryAddress.trim().length < 5) {
+            setError("Please enter a valid delivery address");
+            return;
+        }
+        if (!items || items.length === 0) {
+            setError("Your cart is empty");
             return;
         }
 
@@ -155,11 +181,11 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             const token = localStorage.getItem("userToken");
 
             let endpoint = `${API}/orders`;
-            const headers: any = {
+            const headers: Record<string, string> = {
                 "Content-Type": "application/json",
             };
 
-            const body: any = {
+            const body: OrderBody = {
                 customerName: customerName.trim(),
                 customerEmail: customerEmail.trim(),
                 customerPhone: customerPhone.trim(),

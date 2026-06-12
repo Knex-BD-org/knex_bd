@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
 
-interface DataTableProps {
+interface DataTableProps<T> {
     headers: string[];
-    data: any[];
-    renderRow: (item: any, index: number) => React.ReactNode;
+    data: T[];
+    renderRow: (item: T, index: number) => React.ReactNode;
     emptyMessage?: string;
 }
 
-export default function DataTable({ headers, data, renderRow, emptyMessage = "No data available" }: DataTableProps) {
+export default function DataTable<T>({ headers, data, renderRow, emptyMessage = "No data available" }: DataTableProps<T>) {
     return (
         <div className="bg-white rounded-lg border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
