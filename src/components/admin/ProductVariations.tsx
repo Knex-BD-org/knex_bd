@@ -3,6 +3,7 @@ import { X, Upload, Loader2, Plus, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useNotification } from "@/context/NotificationContext";
+import { compressImageClient } from "@/lib/imageCompression";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -37,10 +38,11 @@ export default function ProductVariations({ productType, setProductType, swatchT
     const { showToast } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
-        const formData = new FormData();
-        formData.append("image", file);
-
         try {
+            const compressedFile = await compressImageClient(file);
+            const formData = new FormData();
+            formData.append("image", compressedFile);
+
             const res = await fetch(`${API_URL}/upload/single`, {
                 method: "POST",
                 body: formData,
@@ -64,12 +66,13 @@ export default function ProductVariations({ productType, setProductType, swatchT
     };
 
     const uploadImages = async (files: FileList): Promise<string[]> => {
-        const formData = new FormData();
-        Array.from(files).forEach(file => {
-            formData.append("images", file);
-        });
-
         try {
+            const formData = new FormData();
+            for (const file of Array.from(files)) {
+                const compressedFile = await compressImageClient(file);
+                formData.append("images", compressedFile);
+            }
+
             const res = await fetch(`${API_URL}/upload/multiple`, {
                 method: "POST",
                 body: formData,

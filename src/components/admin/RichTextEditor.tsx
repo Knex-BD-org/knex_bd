@@ -8,6 +8,7 @@ import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useState, useEffect } from 'react';
 import { useNotification } from '@/context/NotificationContext';
+import { compressImageClient } from '@/lib/imageCompression';
 import {
     Bold,
     Italic,
@@ -37,9 +38,10 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
     const { showToast } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
-        const formData = new FormData();
-        formData.append("image", file);
         try {
+            const compressedFile = await compressImageClient(file);
+            const formData = new FormData();
+            formData.append("image", compressedFile);
             const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
             const res = await fetch(`${API_URL}/upload/single`, {
                 method: "POST",

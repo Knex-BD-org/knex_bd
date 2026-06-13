@@ -3,6 +3,7 @@ import { ImagePlus, Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useNotification } from "@/context/NotificationContext";
+import { compressImageClient } from "@/lib/imageCompression";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -20,10 +21,11 @@ export default function ProductImages({ mainImage, setMainImage, gallery, setGal
     const { showToast } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
-        const formData = new FormData();
-        formData.append("image", file);
-
         try {
+            const compressedFile = await compressImageClient(file);
+            const formData = new FormData();
+            formData.append("image", compressedFile);
+
             const res = await fetch(`${API_URL}/upload/single`, {
                 method: "POST",
                 body: formData,

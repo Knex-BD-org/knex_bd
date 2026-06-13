@@ -3,6 +3,7 @@ import RichTextEditor from "./RichTextEditor";
 import { useState } from "react";
 import SearchableSelect from "./SearchableSelect";
 import { useNotification } from "@/context/NotificationContext";
+import { compressImageClient } from "@/lib/imageCompression";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -98,9 +99,10 @@ export default function ProductFormFields({
     const { showToast, confirm } = useNotification();
 
     const uploadImage = async (file: File): Promise<string | null> => {
-        const formData = new FormData();
-        formData.append("image", file);
         try {
+            const compressedFile = await compressImageClient(file);
+            const formData = new FormData();
+            formData.append("image", compressedFile);
             const res = await fetch(`${API_URL}/upload/single`, {
                 method: "POST",
                 body: formData,
