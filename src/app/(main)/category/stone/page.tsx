@@ -102,13 +102,13 @@ export default function StoneCategoryPage() {
                             layout="fill"
                             objectFit="cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-8">
+                        <div className="absolute inset-0 bg-linear-to-r from-black/60 to-transparent flex items-center p-8">
                             <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-md">
                                 {currentLang.title}
                             </h1>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-linear-to-br from-blue-50 to-indigo-50">
                         <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
                             {currentLang.subtitle}
                         </p>
@@ -146,7 +146,7 @@ export default function StoneCategoryPage() {
             <div className="max-w-7xl mx-auto px-4 mb-16">
                 <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-10 border border-gray-100">
                     <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                        <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-600">
                             {currentLang.priceTitle}
                         </span>
                     </h2>
@@ -154,7 +154,7 @@ export default function StoneCategoryPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gradient-to-r from-blue-50 to-indigo-50">
+                                <tr className="bg-linear-to-r from-blue-50 to-indigo-50">
                                     <th className="px-6 py-4 text-sm md:text-base font-bold text-gray-700 border-b-2 border-blue-100 rounded-tl-lg">
                                         {currentLang.tableHeaders[0]}
                                     </th>
@@ -192,7 +192,7 @@ export default function StoneCategoryPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Display Images */}
                     {images.map((src, idx) => (
-                        <div key={`img-${idx}`} className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white aspect-[4/3]">
+                        <div key={`img-${idx}`} className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white aspect-4/3">
                             <Image
                                 src={src}
                                 alt={`Stone Gallery ${idx + 1}`}
@@ -204,7 +204,7 @@ export default function StoneCategoryPage() {
                     ))}
                     {/* Display Videos */}
                     {videos.map((src, idx) => (
-                        <div key={`vid-${idx}`} className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-black aspect-[4/3]">
+                        <div key={`vid-${idx}`} className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-black aspect-4/3">
                             <video
                                 src={src}
                                 controls
