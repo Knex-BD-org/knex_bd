@@ -297,7 +297,7 @@ export default function ProductsClient({
                                 <Frown className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-gray-400" />
                                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">No products found</h2>
                                 <p className="text-sm sm:text-base text-gray-600 mb-6">Try adjusting your filters or check back later</p>
-                                <button onClick={clearAllFilters} className="bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition cursor-pointer text-sm sm:text-base">
+                                <button type="button" onClick={clearAllFilters} className="bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition cursor-pointer text-sm sm:text-base">
                                     Clear Filters
                                 </button>
                             </div>

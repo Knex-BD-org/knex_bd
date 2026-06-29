@@ -95,7 +95,7 @@ export default function DesktopFilters({
             <div className="bg-white rounded-lg p-4 sticky top-20">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold">{t("filters")}</h2>
-                    <button onClick={onClearAll} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
+                    <button type="button" onClick={onClearAll} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
                         {t("clear_all_upper")}
                     </button>
                 </div>

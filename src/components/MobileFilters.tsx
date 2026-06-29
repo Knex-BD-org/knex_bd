@@ -115,7 +115,7 @@ export default function MobileFilters({
                         <div className="mb-4">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm font-medium">{t("applied")}</span>
-                                <button onClick={onClearTemp} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
+                                <button type="button" onClick={onClearTemp} className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
                                     {t("clear_all")}
                                 </button>
                             </div>
