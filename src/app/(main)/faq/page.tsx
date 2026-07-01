@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 
 const faqsEn = [
     { q: "How do I place an order?", a: "Browse products, add to cart, and proceed to checkout. You'll need to create an account or login to complete your order." },
-    { q: "What payment methods do you accept?", a: "We accept Cash on Delivery (COD), bKash, and Nagad." },
+    { q: "What payment methods do you accept?", a: "We accept Cash on Delivery (COD),( bKash, and Nagad.)-- Comming Soon" },
     { q: "How long does delivery take?", a: "1-2 days inside Dhaka, 3-5 days outside Dhaka." },
     { q: "Can I cancel my order?", a: "Yes, you can cancel before the order is shipped. Contact support for assistance." },
     { q: "How do I track my order?", a: "Login to your account and visit 'My Orders' to see your order status." },
@@ -23,8 +23,8 @@ const faqsBn = [
 
 export default function FAQPage() {
     return (
-        <InfoPageLayout 
-            titleEn="FAQ" 
+        <InfoPageLayout
+            titleEn="FAQ"
             titleBn="সাধারণ জিজ্ঞাসাবলী"
             subtitleEn="Frequently asked questions"
             subtitleBn="বিস্তাতির জানতে নিচের প্রশ্নগুলো দেখুন"
@@ -52,4 +52,3 @@ function FAQList() {
         </div>
     );
 }
-
