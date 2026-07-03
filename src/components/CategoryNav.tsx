@@ -160,6 +160,7 @@ export default function CategoryNav() {
                                                 return img;
                                             })()}
                                             alt={sub.name}
+                                            fill
                                             sizes="32px"
                                             className="object-contain"
                                         />

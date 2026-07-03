@@ -48,8 +48,8 @@ export default function StoneCategoryPage() {
     };
 
     const currentLang = content[lang];
-    const phoneNumber = "+8801705055880";
-    const displayPhone = "+88 01705055880";
+    const phoneNumber = "+8809647700001";
+    const displayPhone = "+88 09647700001";
 
     // Randomly selected media from public folder
     const images = [

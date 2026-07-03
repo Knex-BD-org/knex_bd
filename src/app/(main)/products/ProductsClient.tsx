@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { ChevronRight, Frown } from "lucide-react";
 import Link from "next/link";
 import ProductListCard from "@/components/ProductListCard";
@@ -44,16 +44,19 @@ export default function ProductsClient({
     subsubcategory = null,
 }: ProductsClientProps) {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const categoryParam = category || searchParams.get("category");
     const subcategoryParam = subcategory || searchParams.get("subcategory");
     const subsubcategoryParam = subsubcategory || searchParams.get("subsubcategory");
+    const searchQueryParam = searchParams.get("search");
 
     const [products, setProducts] = useState<Product[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [totalProducts, setTotalProducts] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<any[]>([]);
 
-    const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+    const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
     const [showFilters, setShowFilters] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState("popularity");
@@ -73,6 +76,7 @@ export default function ProductsClient({
             if (categoryParam) params.set("category", categoryParam);
             if (subcategoryParam) params.set("subcategory", subcategoryParam);
             if (subsubcategoryParam) params.set("subsubcategory", subsubcategoryParam);
+            if (searchQueryParam) params.set("search", searchQueryParam);
             if (selectedBrands.length > 0) params.set("brand", selectedBrands[0]);
 
             // Add price range filter
@@ -112,7 +116,7 @@ export default function ProductsClient({
         loadProducts();
 
         return () => { isMounted = false; };
-    }, [categoryParam, subcategoryParam, subsubcategoryParam, selectedBrands, selectedPriceRange, sortBy, currentPage]);
+    }, [categoryParam, subcategoryParam, subsubcategoryParam, searchQueryParam, selectedBrands, selectedPriceRange, sortBy, currentPage]);
 
     useEffect(() => {
         let isMounted = true;
@@ -122,6 +126,7 @@ export default function ProductsClient({
             if (categoryParam) params.set("category", categoryParam);
             if (subcategoryParam) params.set("subcategory", subcategoryParam);
             if (subsubcategoryParam) params.set("subsubcategory", subsubcategoryParam);
+            if (searchQueryParam) params.set("search", searchQueryParam);
 
             try {
                 const res = await fetch(`${API}/products/brands?${params}`);
@@ -140,7 +145,18 @@ export default function ProductsClient({
         setCurrentPage(1);
 
         return () => { isMounted = false; };
-    }, [categoryParam, subcategoryParam, subsubcategoryParam]);
+    }, [categoryParam, subcategoryParam, subsubcategoryParam, searchQueryParam]);
+
+    useEffect(() => {
+        let isMounted = true;
+        fetch(`${API}/categories`)
+            .then(res => res.json())
+            .then(data => {
+                if (isMounted) setCategories(Array.isArray(data) ? data : []);
+            })
+            .catch(console.error);
+        return () => { isMounted = false; };
+    }, []);
 
     const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
@@ -173,6 +189,9 @@ export default function ProductsClient({
         setSelectedBrands([]);
         setSelectedPriceRange([]);
         setCurrentPage(1);
+        if (categoryParam || subcategoryParam || subsubcategoryParam) {
+            router.push('/products');
+        }
     };
 
     const handleOpenMobileFilters = () => {
@@ -211,6 +230,28 @@ export default function ProductsClient({
         const brand = brands.find(b => b.slug === slug);
         return brand?.name || slug;
     };
+
+    let showGridType: "products" | "subcategories" | "subsubcategories" = "products";
+    let gridItems: any[] = [];
+
+    if (selectedBrands.length === 0 && selectedPriceRange.length === 0) {
+        if (categoryParam && !subcategoryParam) {
+            const cat = categories.find(c => c.slug === categoryParam);
+            const subs = cat?.subCategories || cat?.subcategories || [];
+            if (subs.length > 0) {
+                showGridType = "subcategories";
+                gridItems = subs;
+            }
+        } else if (categoryParam && subcategoryParam && !subsubcategoryParam) {
+            const cat = categories.find(c => c.slug === categoryParam);
+            const sub = (cat?.subCategories || cat?.subcategories || []).find((s: any) => s.slug === subcategoryParam);
+            const subsubs = sub?.subSubCategories || sub?.subsubcategories || [];
+            if (subsubs.length > 0) {
+                showGridType = "subsubcategories";
+                gridItems = subsubs;
+            }
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -273,12 +314,51 @@ export default function ProductsClient({
                             viewMode={viewMode}
                             sortBy={sortBy}
                             filterCount={selectedBrands.length + selectedPriceRange.length}
+                            isCategoryView={showGridType !== "products"}
                             onViewModeChange={setViewMode}
                             onSortChange={setSortBy}
                             onOpenFilters={handleOpenMobileFilters}
                         />
 
-                        {loading ? (
+                        {showGridType !== "products" ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-6 px-2">
+                                {gridItems.map((item) => (
+                                    <Link 
+                                        key={item.id} 
+                                        href={showGridType === "subcategories" ? `/category/${categoryParam}/${item.slug}` : `/category/${categoryParam}/${subcategoryParam}/${item.slug}`} 
+                                        className="flex flex-col items-center gap-3 group cursor-pointer"
+                                    >
+                                        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full p-[2px] sm:p-[3px] bg-gradient-to-tr from-gray-200 to-gray-300 group-hover:from-blue-500 group-hover:to-purple-500 transition-all duration-500 shadow-sm group-hover:shadow-md">
+                                            <div className="w-full h-full bg-white rounded-full p-1 sm:p-1.5 flex items-center justify-center overflow-hidden">
+                                                {item.image ? (
+                                                    <div className="relative w-full h-full rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                                                        <img
+                                                            src={(() => {
+                                                                const img = item.image;
+                                                                if (img.startsWith('/uploads')) {
+                                                                    const baseUrl = API.replace('/api', '');
+                                                                    return `${baseUrl}${img}`;
+                                                                }
+                                                                return img;
+                                                            })()}
+                                                            alt={item.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-full h-full rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 transition-colors duration-500">
+                                                        <span className="text-[10px] sm:text-xs font-medium">No Image</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-xs sm:text-sm font-semibold text-gray-700 text-center group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 px-1">
+                                            {item.name}
+                                        </span>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : loading ? (
                             <div className="flex justify-center py-12">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                             </div>
@@ -303,7 +383,7 @@ export default function ProductsClient({
                             </div>
                         )}
 
-                        {totalPages > 1 && (
+                        {showGridType === "products" && totalPages > 1 && (
                             <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 flex-wrap">
                                 <button onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} className="px-3 sm:px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs sm:text-sm" disabled={currentPage === 1}>
                                     Previous

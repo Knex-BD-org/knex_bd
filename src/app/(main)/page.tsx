@@ -79,11 +79,11 @@ export default function HomePage() {
 
     const bannerImages = [
         {
-            url: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771566855/Banner_1_graraq.png",
-            href: "/category/fashion/women/lehenga"
+            url: "https://res.cloudinary.com/druwzzjp3/image/upload/v1782984374/Banner_img_fdhteq.png",
+            href: "/category/beauty/herbal"
         },
         {
-            url: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771566855/Banner_2_mn799l.png",
+            url: "https://res.cloudinary.com/druwzzjp3/image/upload/v1783107833/Banner_2_oscs5s.png",
             href: "/category/fashion/women/lehenga"
         },
     ];
@@ -91,10 +91,10 @@ export default function HomePage() {
 
 
     const topDeals = [
-        { title: "Royal Noor Lehenga", price: "From Tk 6990", image: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771742122/knex_uploads/product%204-1771742121264-1771742121431.webp", href: "/category/fashion/women/lehenga" },
-        { title: "Meher Mahal Bridal Lehenga", price: "From Tk 499", image: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771742072/knex_uploads/product%203-1771742070704-1771742071105.webp", href: "/category/fashion/women/lehenga" },
-        { title: "Zarqa Velvet Dream Lehenga", price: "From Tk 6599", image: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771742112/knex_uploads/product%201-1771742111293-1771742111537.webp", href: "/category/fashion/women/lehenga" },
-        { title: "Sundari Blossom Lehenga", price: "From Tk 8279", image: "https://res.cloudinary.com/dh34a84tc/image/upload/v1771821836/product_5_cus2zj.jpg", href: "/category/fashion/women/lehenga" },
+        { title: "Herbal Hair Oil", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781595644/knex_uploads/p29i1-1781595642931-1781595643065.webp", href: "https://knex.com.bd/category/beauty/herbal" },
+        { title: "Authentic Herbal Products", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781593057/knex_uploads/p26i4-1781593055793-1781593056344.webp", href: "https://knex.com.bd/category/beauty/herbal" },
+        { title: "Natural Herbal Beauty Essentials", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781587365/knex_uploads/f12i1-1781587363919-1781587364063.webp", href: "https://knex.com.bd/category/beauty/herbal" },
+        { title: "Pure Glow Herbal Face Products", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781511351/knex_uploads/f6i1-1781511350008-1781511350295.webp", href: "https://knex.com.bd/category/beauty/herbal" },
     ];
 
     // const saleDeals = [

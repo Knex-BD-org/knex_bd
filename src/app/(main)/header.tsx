@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ShoppingCart, Search, Heart, UserRound, Menu, X, Loader2, Package } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -24,7 +25,8 @@ export default function Header() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState<SearchProduct[]>([]);
     const [searchLoading, setSearchLoading] = useState(false);
-    const searchRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLFormElement>(null);
+    const router = useRouter();
 
     const { getCartCount } = useCart();
     const { items: wishlistItems } = useWishlist();
@@ -77,6 +79,15 @@ export default function Header() {
         setShowSuggestions(value.trim().length > 0);
     };
 
+    const handleSearchSubmit = (e?: React.FormEvent | React.KeyboardEvent | React.MouseEvent) => {
+        if (e) e.preventDefault();
+        if (searchQuery.trim()) {
+            setShowSuggestions(false);
+            setMenuOpen(false);
+            router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+
     return (
         <header className="bg-white shadow-sm ">
             <div className="max-w-7xl mx-auto px-4 ">
@@ -94,16 +105,17 @@ export default function Header() {
                         />
                     </Link>
 
-                    <div className="hidden md:flex flex-1 max-w-2xl relative" ref={searchRef}>
+                    <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-2xl relative" ref={searchRef}>
                         <input
                             type="text"
                             placeholder="Search for products, brands and more..."
                             value={searchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit(e)}
                             onFocus={() => searchQuery && setShowSuggestions(true)}
                             className="w-full px-4 py-2.5 pr-12 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        <button className="absolute right-0 top-0 bottom-0 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-r-lg hover:from-blue-700 hover:to-indigo-700">
+                        <button type="submit" onClick={handleSearchSubmit} className="absolute right-0 top-0 bottom-0 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-r-lg hover:from-blue-700 hover:to-indigo-700">
                             <Search size={20} />
                         </button>
 
@@ -146,7 +158,7 @@ export default function Header() {
                                 ) : null}
                             </div>
                         )}
-                    </div>
+                    </form>
 
                     <div className="hidden md:flex items-center gap-6">
                         <Link href="/account" className="flex flex-col items-center gap-1 hover:text-blue-600"><UserRound size={20} /><span className="text-xs font-medium">Account</span></Link>
@@ -184,15 +196,16 @@ export default function Header() {
                     </Link>
                 </div>
 
-                <div className="md:hidden mt-3 relative">
+                <form onSubmit={handleSearchSubmit} className="md:hidden mt-3 relative">
                     <input
                         type="text"
                         placeholder="Search..."
                         value={searchQuery}
                         onChange={(e) => handleSearchChange(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit(e)}
                         className="w-full px-4 py-2 pr-12 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <button className="absolute right-0 top-0 bottom-0 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-r-lg">
+                    <button type="submit" onClick={handleSearchSubmit} className="absolute right-0 top-0 bottom-0 px-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-r-lg">
                         <Search size={18} />
                     </button>
 
@@ -234,7 +247,7 @@ export default function Header() {
                             ) : null}
                         </div>
                     )}
-                </div>
+                </form>
             </div>
 
             <div className={`fixed inset-0 bg-black/50 z-50 transition-opacity md:hidden ${menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setMenuOpen(false)} />
