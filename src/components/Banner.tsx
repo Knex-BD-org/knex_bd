@@ -37,7 +37,7 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
     if (!images || images.length === 0) return null;
 
     return (
-        <div suppressHydrationWarning className="relative overflow-hidden rounded-2xl group w-full aspect-4/1 md:aspect-5/1 bg-[#f2f6ff]">
+        <div suppressHydrationWarning className="relative overflow-hidden rounded-xl md:rounded-2xl group w-full aspect-[2.5/1] sm:aspect-[3.5/1] md:aspect-[4.5/1] lg:aspect-5/1 bg-transparent">
             <div
                 className="flex transition-transform duration-700 ease-in-out h-full"
                 style={{ transform: `translateX(-${current * 100}%)` }}
@@ -48,7 +48,7 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
                             src={image.url}
                             alt={`Banner ${idx + 1}`}
                             fill
-                            className="object-contain cursor-pointer"
+                            className="object-contain object-center cursor-pointer"
                             priority={idx === 0}
                         />
                     );
@@ -69,10 +69,10 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
 
             {images.length > 1 && (
                 <>
-                    <button onClick={prev} className="cursor-pointer absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full p-1.5 md:p-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
+                    <button onClick={prev} className="cursor-pointer absolute hidden md:block left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full p-1.5 md:p-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                         <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
                     </button>
-                    <button onClick={next} className="cursor-pointer absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full p-1.5 md:p-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
+                    <button onClick={next} className="cursor-pointer absolute hidden md:block right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full p-1.5 md:p-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                         <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
                     </button>
 
