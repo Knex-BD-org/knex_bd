@@ -24,6 +24,7 @@ export interface CartItem {
     selectedSize?: string;
     selectedVariant?: SelectedVariant;
     customSelections?: Record<string, string>;
+    stockQuantity?: number;
 }
 
 interface CartContextType {
@@ -166,6 +167,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         selectedSize: item.selectedSize,
                         selectedVariant: item.selectedVariant,
                         customSelections: item.customSelections,
+                        stockQuantity: item.stockQuantity,
                     })),
                 }),
             });
@@ -194,6 +196,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         selectedSize: item.selectedSize,
                         selectedVariant: item.selectedVariant,
                         customSelections: item.customSelections,
+                        stockQuantity: item.stockQuantity,
                     }),
                 });
                 await loadCart();

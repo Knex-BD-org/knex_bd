@@ -59,9 +59,15 @@ export default function AdminProducts() {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            params.append("page", currentPage.toString());
-            params.append("limit", "10");
-            if (searchQuery) params.append("search", searchQuery);
+            
+            if (searchQuery) {
+                params.append("search", searchQuery);
+                params.append("limit", "1000"); // Fetch more results for local filtering
+            } else {
+                params.append("page", currentPage.toString());
+                params.append("limit", "10");
+            }
+            
             if (categoryFilter) params.append("category", categoryFilter);
             if (subCategoryFilter) params.append("subcategory", subCategoryFilter);
             if (statusFilter === "instock") params.append("inStock", "true");
@@ -78,9 +84,27 @@ export default function AdminProducts() {
             }
 
             const data = await res.json();
-            setProducts(Array.isArray(data.products) ? data.products : []);
-            setTotalProducts(data.total || 0);
-            setTotalPages(data.totalPages || 1);
+            let fetchedProducts = Array.isArray(data.products) ? data.products : [];
+            let total = data.total || 0;
+            let totalPgs = data.totalPages || 1;
+
+            if (searchQuery) {
+                // Client-side filtering by title
+                const query = searchQuery.toLowerCase();
+                fetchedProducts = fetchedProducts.filter((p: Product) => 
+                    p.title.toLowerCase().includes(query)
+                );
+                
+                // Client-side pagination
+                total = fetchedProducts.length;
+                totalPgs = Math.ceil(total / 10);
+                const startIndex = (currentPage - 1) * 10;
+                fetchedProducts = fetchedProducts.slice(startIndex, startIndex + 10);
+            }
+
+            setProducts(fetchedProducts);
+            setTotalProducts(total);
+            setTotalPages(totalPgs || 1);
         } catch (error) {
             console.error("Error fetching products:", error);
             setProducts([]);

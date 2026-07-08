@@ -28,7 +28,7 @@ export default function CartPage() {
         );
     }
 
-    if (items.length === 0) {
+    if (items.length === 0 && !isCheckoutOpen) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-50 px-4">
                 <div className="text-center">
@@ -70,6 +70,7 @@ export default function CartPage() {
                                             selectedSize={item.selectedSize}
                                             selectedVariant={item.selectedVariant}
                                             customSelections={item.customSelections}
+                                            stockQuantity={item.stockQuantity}
                                             onQuantityChange={(_, qty) => updateQuantity(item.id, qty)}
                                             onRemove={() => removeFromCart(item.id)}
                                         />

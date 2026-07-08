@@ -13,8 +13,7 @@ import {
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-// Admin email - only this email has admin access
-const ADMIN_EMAIL = "admin@knex.bd";
+
 
 // Token change listeners
 type TokenCallback = (token: string | null) => void;
@@ -148,29 +147,75 @@ const syncGuestData = async (token: string): Promise<void> => {
     }
 };
 
+export const getFirebaseErrorMessage = (error: any): string => {
+    if (!error?.code || !error.code.startsWith("auth/")) {
+        return error?.message || "An unexpected error occurred. Please try again.";
+    }
+    
+    switch (error.code) {
+        case "auth/email-already-in-use":
+            return "This email address is already registered. Please log in instead.";
+        case "auth/invalid-email":
+            return "Please enter a valid email address.";
+        case "auth/weak-password":
+            return "Your password is too weak. Please use at least 6 characters.";
+        case "auth/password-does-not-meet-requirements":
+            return "Password must be stronger. Please use a mix of uppercase, lowercase, numbers, and symbols.";
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+            return "Incorrect email or password. Please check your credentials and try again.";
+        case "auth/too-many-requests":
+            return "Too many failed attempts. Please try again later or reset your password.";
+        case "auth/network-request-failed":
+            return "A network error occurred. Please check your internet connection and try again.";
+        case "auth/requires-recent-login":
+            return "For security reasons, please log out and log back in to perform this action.";
+        default:
+            if (error.message) {
+                // Strip the "Firebase: " prefix and " (auth/...)" suffix if present
+                const cleanMsg = error.message.replace(/^Firebase:\s*/, "").replace(/\s*\(auth\/.*\)\.?$/, "");
+                return cleanMsg || "An authentication error occurred. Please try again.";
+            }
+            return "An unexpected authentication error occurred. Please try again.";
+    }
+};
+
 // Google Sign-In
 export const signInWithGoogle = async (): Promise<AuthUser> => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const user = toAuthUser(result.user);
-    await syncWithBackend(user);
-    return user;
+    try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        const user = toAuthUser(result.user);
+        await syncWithBackend(user);
+        return user;
+    } catch (error: any) {
+        throw new Error(getFirebaseErrorMessage(error));
+    }
 };
 
 // Email/Password Sign-In
 export const signInWithEmail = async (email: string, password: string): Promise<AuthUser> => {
-    const credential = await signInWithEmailAndPassword(auth, email, password);
-    const user = toAuthUser(credential.user);
-    await syncWithBackend(user);
-    return user;
+    try {
+        const credential = await signInWithEmailAndPassword(auth, email, password);
+        const user = toAuthUser(credential.user);
+        await syncWithBackend(user);
+        return user;
+    } catch (error: any) {
+        throw new Error(getFirebaseErrorMessage(error));
+    }
 };
 
 // Email/Password Sign-Up
 export const signUpWithEmail = async (email: string, password: string): Promise<AuthUser> => {
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = toAuthUser(credential.user);
-    await syncWithBackend(user);
-    return user;
+    try {
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = toAuthUser(credential.user);
+        await syncWithBackend(user);
+        return user;
+    } catch (error: any) {
+        throw new Error(getFirebaseErrorMessage(error));
+    }
 };
 
 // Sign Out
@@ -223,7 +268,8 @@ export const onAuthChange = (callback: (user: AuthUser | null) => void) => {
 
 // Check if current user is admin
 export const isAdmin = (user: AuthUser | null): boolean => {
-    return user?.email === ADMIN_EMAIL;
+    // Admin checks are handled securely on the backend
+    return false;
 };
 
 // Get ID token

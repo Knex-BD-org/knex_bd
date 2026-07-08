@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Minus, Plus, Trash2, Package } from "lucide-react";
+import { useNotification } from "@/context/NotificationContext";
 
 interface SelectedVariant {
     id: number;
@@ -20,6 +21,7 @@ interface CartItemProps {
     selectedSize?: string;
     selectedVariant?: SelectedVariant;
     customSelections?: Record<string, string>;
+    stockQuantity?: number;
     onQuantityChange: (id: string, qty: number) => void;
     onRemove: (id: string) => void;
 }
@@ -34,9 +36,12 @@ export default function CartItem({
     selectedSize,
     selectedVariant,
     customSelections,
+    stockQuantity,
     onQuantityChange,
     onRemove,
 }: CartItemProps) {
+    const { showToast } = useNotification();
+
     // Build variant display text
     const getVariantText = () => {
         const parts: string[] = [];
@@ -90,7 +95,13 @@ export default function CartItem({
                     </button>
                     <span className="w-8 text-center font-medium text-sm sm:text-base text-gray-900">{quantity}</span>
                     <button
-                        onClick={() => onQuantityChange(id, quantity + 1)}
+                        onClick={() => {
+                            if (stockQuantity !== undefined && quantity >= stockQuantity) {
+                                showToast("আমাদের স্টকে আপাতত প্রোডাক্ট টি আর নেই", "error");
+                            } else {
+                                onQuantityChange(id, quantity + 1);
+                            }
+                        }}
                         className="w-7 h-7 sm:w-6 sm:h-6 flex items-center justify-center text-gray-600 hover:text-gray-900 cursor-pointer border rounded sm:border-0"
                     >
                         <Plus size={14} />

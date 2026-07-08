@@ -207,7 +207,14 @@ export default function SingleProductPage() {
     const galleryImages = getGalleryImages();
 
     const handleQuantityChange = (type: "inc" | "dec") => {
-        if (type === "inc") setQuantity(prev => prev + 1);
+        const maxStock = selectedVariant?.stock ?? product?.stockQuantity ?? 1;
+        if (type === "inc") {
+            if (quantity < maxStock) {
+                setQuantity(prev => prev + 1);
+            } else {
+                showToast("আমাদের স্টকে আপাতত প্রোডাক্ট টি আর নেই", "error");
+            }
+        }
         if (type === "dec" && quantity > 1) setQuantity(prev => prev - 1);
     };
 
@@ -326,6 +333,7 @@ export default function SingleProductPage() {
                     price: selectedVariant.price
                 } : undefined,
                 customSelections: Object.keys(customSelections).length > 0 ? customSelections : undefined,
+                stockQuantity: selectedVariant?.stock ?? product.stockQuantity,
             }, quantity);
             setAddedToCart(true);
             setTimeout(() => setAddedToCart(false), 2000);
@@ -356,6 +364,7 @@ export default function SingleProductPage() {
                     price: selectedVariant.price
                 } : undefined,
                 customSelections: Object.keys(customSelections).length > 0 ? customSelections : undefined,
+                stockQuantity: selectedVariant?.stock ?? product.stockQuantity,
             }, quantity);
             router.push("/cart");
         } catch (error) {

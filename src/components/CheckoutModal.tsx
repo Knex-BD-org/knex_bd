@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { X, User, Phone, Mail, MapPin, Wallet, LogIn, Loader2, CheckCircle, XCircle, ChevronDown, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,9 +48,9 @@ interface OrderBody {
 }
 
 export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const router = useRouter();
-    const { refreshCart, items } = useCart();
+    const { refreshCart, clearCart, items } = useCart();
 
     const [location, setLocation] = useState<"inside" | "outside">("inside");
     const [paymentMethod, setPaymentMethod] = useState<"cod" /* | "bkash" | "nagad" */>("cod");
@@ -106,6 +106,10 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         }
     }, []);
 
+    // Track if modal was previously open
+    const prevIsOpen = useRef(false);
+    const prevLanguage = useRef(i18n.language);
+
     // Check if user is logged in and fetch addresses
     useEffect(() => {
         if (isOpen) {
@@ -116,11 +120,23 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             setOrderSuccess(false);
             setError("");
 
+            // Only set language to 'bn' when the modal transitions from closed to open
+            if (!prevIsOpen.current) {
+                prevLanguage.current = i18n.language;
+                if (i18n.language !== 'bn') {
+                    i18n.changeLanguage('bn');
+                }
+            }
+
             if (loggedIn) {
                 fetchAddresses();
             }
+        } else if (prevIsOpen.current) {
+            // Modal just closed — restore previous language
+            i18n.changeLanguage(prevLanguage.current);
         }
-    }, [isOpen, fetchAddresses]);
+        prevIsOpen.current = isOpen;
+    }, [isOpen, fetchAddresses, i18n]);
 
     // Handle address selection
     const handleAddressSelect = (addressId: number | "custom") => {
@@ -228,8 +244,12 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             setOrderNumber(data.order.orderNumber);
             setOrderSuccess(true);
 
-            // Refresh cart to clear items
-            await refreshCart();
+            // Clear cart to remove items
+            if (!token) {
+                clearCart();
+            } else {
+                await refreshCart();
+            }
 
             // Reset form
             setCustomerName("");
@@ -265,32 +285,32 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                     </div>
 
                     <h2 className="text-2xl font-bold text-gray-900 mb-3">{t("order_placed")}</h2>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-gray-600 mb-6">
                         {t("order_success_desc")}
-                    </p>
-                    <p className="text-lg font-semibold text-blue-600 mb-6">
-                        {t("order_number_label")} {orderNumber}
-                    </p>
-                    <p className="text-sm text-gray-500 mb-6">
-                        {t("contact_confirm_desc")}
                     </p>
 
                     <div className="space-y-3">
-                        <button
-                            onClick={() => {
-                                onClose();
-                                router.push("/myprofile?tab=orders");
-                            }}
-                            className="block w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition cursor-pointer"
-                        >
-                            {t("view_my_orders")}
-                        </button>
+                        {isLoggedIn && (
+                            <button
+                                onClick={() => {
+                                    onClose();
+                                    router.push("/account/orders");
+                                }}
+                                className="block w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition cursor-pointer"
+                            >
+                                {t("view_my_orders")}
+                            </button>
+                        )}
                         <button
                             onClick={() => {
                                 onClose();
                                 router.push("/");
                             }}
-                            className="block w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition cursor-pointer"
+                            className={`block w-full py-3 rounded-xl font-semibold transition cursor-pointer ${
+                                isLoggedIn
+                                ? "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                                : "bg-blue-600 text-white hover:bg-blue-700"
+                            }`}
                         >
                             {t("continue_shopping")}
                         </button>
@@ -311,9 +331,25 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                     <div className="w-12 h-12 relative shrink-0">
                         <Image src="https://res.cloudinary.com/dh34a84tc/image/upload/v1772353425/3d-png_lcu5qg.png" alt="KNEX" fill className="object-contain" loading="eager" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                         <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t("checkout")}</h2>
                         <p className="text-xs text-gray-500">{t("complete_your_order")}</p>
+                    </div>
+                    <div className="flex bg-gray-100 p-1 rounded-lg shrink-0 mr-8">
+                        <button
+                            type="button"
+                            onClick={() => i18n.changeLanguage("bn")}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${i18n.language === "bn" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
+                        >
+                            বাংলা
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => i18n.changeLanguage("en")}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${i18n.language === "en" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-900"}`}
+                        >
+                            EN
+                        </button>
                     </div>
                 </div>
 
@@ -424,7 +460,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                 <User size={18} className="text-blue-500 shrink-0" />
                                 <input
                                     type="text"
-                                    placeholder="Full Name"
+                                    placeholder={t("full_name_placeholder", "Full Name")}
                                     required
                                     value={customerName}
                                     onChange={(e) => setCustomerName(e.target.value)}
@@ -438,7 +474,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                 <Phone size={18} className="text-green-500 shrink-0" />
                                 <input
                                     type="tel"
-                                    placeholder="Phone Number"
+                                    placeholder={t("phone_number_placeholder", "Phone Number")}
                                     required
                                     value={customerPhone}
                                     onChange={(e) => setCustomerPhone(e.target.value)}
@@ -454,7 +490,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             <Mail size={18} className="text-yellow-600 shrink-0" />
                             <input
                                 type="email"
-                                placeholder="Email Address (Optional)"
+                                placeholder={t("email_placeholder", "Email Address (Optional)")}
                                 value={customerEmail}
                                 onChange={(e) => setCustomerEmail(e.target.value)}
                                 className="w-full bg-transparent outline-none text-sm"
@@ -467,7 +503,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         <div className="flex items-start gap-3 px-4 py-3 border rounded-xl focus-within:ring-2 focus-within:ring-blue-400 transition">
                             <MapPin size={18} className="text-blue-500 mt-1 shrink-0" />
                             <textarea
-                                placeholder="Delivery Address"
+                                placeholder={t("delivery_address_placeholder", "Delivery Address")}
                                 required
                                 value={deliveryAddress}
                                 onChange={(e) => setDeliveryAddress(e.target.value)}
