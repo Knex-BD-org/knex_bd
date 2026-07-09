@@ -107,22 +107,21 @@ export default function ProductListCard({
                 </div>
 
                 {/* Mobile Price Section */}
-                <div className="sm:hidden flex items-center justify-between mt-2">
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xl font-bold">Tk {price.toLocaleString()}</span>
+                <div className="sm:hidden flex items-center mt-2 flex-wrap gap-2">
+                    <span className="text-xl font-bold">Tk {price.toLocaleString()}</span>
+                    {originalPrice && originalPrice > price && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-gray-400 line-through text-xs">
+                                Tk {originalPrice.toLocaleString()}
+                            </span>
+                            <span className="text-indigo-600 font-semibold text-xs">
+                                {calculatedDiscount}% off
+                            </span>
                         </div>
-                        {originalPrice && originalPrice > price && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-gray-400 line-through text-xs">
-                                    Tk {originalPrice.toLocaleString()}
-                                </span>
-                                <span className="text-indigo-600 font-semibold text-xs">
-                                    {calculatedDiscount}% off
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                    )}
+                    <span className="ml-auto text-indigo-600 text-sm font-medium px-4 py-1.5 bg-indigo-50 hover:bg-indigo-100 transition-colors rounded-full">
+                        More details
+                    </span>
                 </div>
             </div>
 

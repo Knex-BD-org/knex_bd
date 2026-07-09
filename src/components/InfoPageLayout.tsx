@@ -118,8 +118,8 @@ export default function InfoPageLayout({
                                                     key={link.href}
                                                     href={link.href}
                                                     className={`group flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${isActive
-                                                            ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-100"
-                                                            : "text-gray-600 hover:bg-white hover:text-blue-600"
+                                                        ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-100"
+                                                        : "text-gray-600 hover:bg-white hover:text-blue-600"
                                                         }`}
                                                 >
                                                     {lang === "en" ? link.nameEn : link.nameBn}
@@ -175,7 +175,7 @@ export default function InfoPageLayout({
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Email Support</p>
-                                        <p className="font-bold text-gray-900">support@knex.com.bd</p>
+                                        <p className="font-bold text-gray-900">info@knex.com.bd(Will Be Available Soon)</p>
                                     </div>
                                 </div>
                                 <div className="p-6 bg-white border border-gray-100 rounded-2xl flex items-center gap-4">

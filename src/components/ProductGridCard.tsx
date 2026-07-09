@@ -85,7 +85,7 @@ export default function ProductGridCard({
                     </span>
                     <span className="text-xs text-gray-500">({totalRatings.toLocaleString()})</span>
                 </div>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <span className="text-xl font-bold text-gray-900">Tk {price.toLocaleString()}</span>
                     {originalPrice && originalPrice > price && (
                         <>
@@ -97,6 +97,9 @@ export default function ProductGridCard({
                             </span>
                         </>
                     )}
+                    <span className="md:hidden ml-auto text-indigo-600 text-sm font-medium px-4 py-1.5 bg-indigo-50 hover:bg-indigo-100 transition-colors rounded-full">
+                        More details
+                    </span>
                 </div>
 
             </div>
