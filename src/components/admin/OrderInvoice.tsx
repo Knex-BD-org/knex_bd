@@ -38,9 +38,9 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
     const [customerPhone, setCustomerPhone] = useState(order.customerPhone);
     const [deliveryAddress, setDeliveryAddress] = useState(order.deliveryAddress);
     const [invoiceDate, setInvoiceDate] = useState(new Date(order.createdAt).toLocaleDateString());
-    
-    const [items, setItems] = useState(order.items.map(item => ({...item})));
-    
+
+    const [items, setItems] = useState(order.items.map(item => ({ ...item })));
+
     const [deliveryCharge, setDeliveryCharge] = useState(order.deliveryCharge);
 
     // Calculated state
@@ -64,7 +64,7 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
     }, []);
 
     const invoiceContent = (
-        <div className="print-invoice-wrapper fixed inset-0 z-[100] bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
+        <div className="print-invoice-wrapper fixed inset-0 z-100 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto print:shadow-none print:max-h-none print:w-full print:m-0 print:rounded-none print:overflow-visible">
                 {/* Print Action Bar - hidden when printing */}
                 <div className="sticky top-0 bg-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center print:hidden rounded-t-xl z-10">
@@ -86,11 +86,11 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                         <div>
                             {/* KNEX Logo */}
                             <div className="mb-4">
-                                <Image 
-                                    src="https://res.cloudinary.com/druwzzjp3/image/upload/v1781161177/3d-png_hbgcsh.png" 
-                                    alt="KNEX.BD" 
-                                    width={400} 
-                                    height={120} 
+                                <Image
+                                    src="https://res.cloudinary.com/druwzzjp3/image/upload/v1781161177/3d-png_hbgcsh.png"
+                                    alt="KNEX.BD"
+                                    width={400}
+                                    height={120}
                                     className="h-24 w-auto"
                                     unoptimized
                                 />
@@ -105,9 +105,9 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                 <p className="mb-1"><span className="font-semibold">Invoice No:</span> INV-{order.orderNumber}</p>
                                 <div className="flex justify-end items-center mb-1">
                                     <span className="font-semibold mr-2">Date:</span>
-                                    <input 
-                                        className="text-right border-none outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 print:p-0 bg-transparent w-28" 
-                                        value={invoiceDate} 
+                                    <input
+                                        className="text-right border-none outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 print:p-0 bg-transparent w-28"
+                                        value={invoiceDate}
                                         onChange={(e) => setInvoiceDate(e.target.value)}
                                     />
                                 </div>
@@ -129,10 +129,10 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                             </div>
                             <div className="flex items-start">
                                 <span className="font-semibold w-24 mt-1">Address:</span>
-                                <textarea 
-                                    className="flex-1 border-none outline-none focus:ring-1 focus:ring-blue-500 bg-transparent resize-none print:p-0 h-16" 
-                                    value={deliveryAddress} 
-                                    onChange={(e) => setDeliveryAddress(e.target.value)} 
+                                <textarea
+                                    className="flex-1 border-none outline-none focus:ring-1 focus:ring-blue-500 bg-transparent resize-none print:p-0 h-16"
+                                    value={deliveryAddress}
+                                    onChange={(e) => setDeliveryAddress(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -167,16 +167,16 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                                 {variantText && <div className="text-xs text-gray-500 mt-1">{variantText}</div>}
                                             </td>
                                             <td className="py-4 px-2 text-center">
-                                                <input 
-                                                    type="number" 
+                                                <input
+                                                    type="number"
                                                     className="w-16 text-center border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                                     value={item.quantity}
                                                     onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
                                                 />
                                             </td>
                                             <td className="py-4 px-2 text-right">
-                                                <input 
-                                                    type="number" 
+                                                <input
+                                                    type="number"
                                                     className="w-24 text-right border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                                     value={item.price}
                                                     onChange={(e) => handleItemChange(idx, 'price', e.target.value)}
@@ -203,7 +203,7 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                 <span className="font-semibold text-gray-600">Delivery Charge:</span>
                                 <div className="flex items-center">
                                     <span className="mr-1">Tk</span>
-                                    <input 
+                                    <input
                                         type="number"
                                         className="w-16 text-right border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                         value={deliveryCharge}
@@ -228,15 +228,16 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                     </div>
                 </div>
             </div>
-            
+
             {/* Inject print styles globally just for this component */}
-            <style dangerouslySetInnerHTML={{__html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 @media print {
                     @page { margin: 0; }
-                    body { 
-                        margin: 0; 
-                        padding: 0; 
-                        background: white; 
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        background: white;
                     }
                     /* Hide everything in the body EXCEPT our invoice wrapper */
                     body > *:not(.print-invoice-wrapper) {
