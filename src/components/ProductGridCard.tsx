@@ -97,8 +97,17 @@ export default function ProductGridCard({
                             </span>
                         </>
                     )}
-                    <span className="md:hidden ml-auto text-indigo-600 text-sm font-medium px-4 py-1.5 bg-indigo-50 hover:bg-indigo-100 transition-colors rounded-full">
-                        More details
+                    <span className="md:hidden ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-linear-to-r from-indigo-600 to-blue-600 text-white text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+                        More Details
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                     </span>
                 </div>
 

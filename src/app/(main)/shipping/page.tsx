@@ -4,35 +4,35 @@ export const metadata = { title: "Shipping - KNEX" };
 
 export default function ShippingPage() {
     return (
-        <InfoPageLayout 
-            titleEn="Shipping" 
+        <InfoPageLayout
+            titleEn="Shipping"
             titleBn="ডেলিভারি তথ্য"
             subtitleEn="Delivery information"
             subtitleBn="পণ্য সরবরাহের বিস্তারিত"
         >
-            <Section 
+            <Section
                 titleEn="Delivery Areas"
                 titleBn="ডেলিভারি এলাকা"
                 childrenEn={<p>We deliver to all districts across Bangladesh.</p>}
                 childrenBn={<p>আমরা বাংলাদেশের সকল জেলায় পণ্য সরবরাহ করি।</p>}
             />
-            <Section 
+            <Section
                 titleEn="Delivery Charges"
                 titleBn="ডেলিভারি চার্জ"
                 childrenEn={
                     <ul className="list-disc list-inside space-y-1">
-                        <li><strong>Inside Dhaka:</strong> Tk 80</li>
-                        <li><strong>Outside Dhaka:</strong> Tk 150</li>
+                        <li><strong>Inside Dhaka:</strong> Tk 60</li>
+                        <li><strong>Outside Dhaka:</strong> Tk 130</li>
                     </ul>
                 }
                 childrenBn={
                     <ul className="list-disc list-inside space-y-1">
-                        <li><strong>ঢাকার ভেতরে:</strong> ৮০ টাকা</li>
-                        <li><strong>ঢাকার বাইরে:</strong> ১৫০ টাকা</li>
+                        <li><strong>ঢাকার ভেতরে:</strong> ৬০ টাকা</li>
+                        <li><strong>ঢাকার বাইরে:</strong> ১৩০ টাকা</li>
                     </ul>
                 }
             />
-            <Section 
+            <Section
                 titleEn="Delivery Time"
                 titleBn="ডেলিভারি সময়"
                 childrenEn={
@@ -48,7 +48,7 @@ export default function ShippingPage() {
                     </ul>
                 }
             />
-            <Section 
+            <Section
                 titleEn="Order Tracking"
                 titleBn="অর্ডার ট্র্যাকিং"
                 childrenEn={<p>Track your order status from your account&apos;s &quot;My Orders&quot; section.</p>}
@@ -57,4 +57,3 @@ export default function ShippingPage() {
         </InfoPageLayout>
     );
 }
-

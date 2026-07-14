@@ -163,7 +163,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
     if (!isOpen) return null;
 
-    const deliveryCharge = location === "inside" ? 80 : 150;
+    const deliveryCharge = location === "inside" ? 60 : 130;
     const finalTotal = total + deliveryCharge;
 
     // Handle order submission
@@ -521,14 +521,14 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                 <input type="radio" name="location" checked={location === "inside"} onChange={() => setLocation("inside")} className="w-4 h-4 text-blue-600 shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="font-medium text-sm">{t("inside_dhaka")}</p>
-                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 80 })}</p>
+                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 60 })}</p>
                                 </div>
                             </label>
                             <label className="flex items-center gap-3 px-4 py-3 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition" style={{ borderColor: location === "outside" ? "#22c55e" : "#e5e7eb" }}>
                                 <input type="radio" name="location" checked={location === "outside"} onChange={() => setLocation("outside")} className="w-4 h-4 text-green-600 shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="font-medium text-sm">{t("outside_dhaka")}</p>
-                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 150 })}</p>
+                                    <p className="text-xs text-gray-500">{t("delivery_charge_info", { amount: 130 })}</p>
                                 </div>
                             </label>
                         </div>

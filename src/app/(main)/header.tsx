@@ -26,6 +26,7 @@ export default function Header() {
     const [suggestions, setSuggestions] = useState<SearchProduct[]>([]);
     const [searchLoading, setSearchLoading] = useState(false);
     const searchRef = useRef<HTMLFormElement>(null);
+    const mobileSearchRef = useRef<HTMLFormElement>(null);
     const router = useRouter();
 
     const { getCartCount } = useCart();
@@ -35,13 +36,20 @@ export default function Header() {
     const wishlistCount = wishlistItems.length;
 
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            const isOutsideDesktop = !searchRef.current || !searchRef.current.contains(event.target as Node);
+            const isOutsideMobile = !mobileSearchRef.current || !mobileSearchRef.current.contains(event.target as Node);
+            
+            if (isOutsideDesktop && isOutsideMobile) {
                 setShowSuggestions(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
     }, []);
 
     const searchProducts = useCallback(async (query: string) => {
@@ -196,7 +204,7 @@ export default function Header() {
                     </Link>
                 </div>
 
-                <form onSubmit={handleSearchSubmit} className="md:hidden mt-3 relative">
+                <form onSubmit={handleSearchSubmit} className="md:hidden mt-3 relative" ref={mobileSearchRef}>
                     <input
                         type="text"
                         placeholder="Search..."
