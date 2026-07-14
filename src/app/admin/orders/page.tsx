@@ -17,10 +17,12 @@ import {
     X,
     ChevronLeft,
     ChevronRight,
-    Trash2
+    Trash2,
+    Printer
 } from "lucide-react";
 import Image from "next/image";
 import { useNotification } from "@/context/NotificationContext";
+import OrderInvoice from "@/components/admin/OrderInvoice";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -86,6 +88,7 @@ export default function AdminOrders() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [updatingStatus, setUpdatingStatus] = useState(false);
     const [deletingOrder, setDeletingOrder] = useState(false);
+    const [showInvoice, setShowInvoice] = useState(false);
     const { showToast, confirm } = useNotification();
 
     const fetchOrders = async () => {
@@ -366,6 +369,13 @@ export default function AdminOrders() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
+                                    onClick={() => setShowInvoice(true)}
+                                    className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="Print Invoice"
+                                >
+                                    <Printer className="w-5 h-5" />
+                                </button>
+                                <button
                                     onClick={() => handleDeleteOrder(selectedOrder.id)}
                                     disabled={deletingOrder}
                                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
@@ -512,6 +522,13 @@ export default function AdminOrders() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showInvoice && selectedOrder && (
+                <OrderInvoice 
+                    order={selectedOrder} 
+                    onClose={() => setShowInvoice(false)} 
+                />
             )}
         </ProtectedAdmin>
     );
