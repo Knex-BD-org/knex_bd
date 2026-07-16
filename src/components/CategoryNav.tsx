@@ -152,10 +152,16 @@ export default function CategoryNav() {
                                     <div className="relative w-8 h-8 shrink-0">
                                         <Image
                                             src={(() => {
-                                                const img = sub.image || "https://knex.com.bd/wp-content/uploads/2025/11/Electronicss-removebg-preview.png";
+                                                let img = sub.image || "https://knex.com.bd/wp-content/uploads/2025/11/Electronicss-removebg-preview.png";
                                                 if (img.startsWith('/uploads')) {
                                                     const baseUrl = API.replace('/api', '');
-                                                    return `${baseUrl}${img}`;
+                                                    img = `${baseUrl}${img}`;
+                                                }
+                                                if (img.startsWith('http://') && !img.includes('localhost')) {
+                                                    img = img.replace('http://', 'https://');
+                                                }
+                                                if (img.includes('res.cloudinary.com') && !img.includes('f_auto')) {
+                                                    img = img.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
                                                 }
                                                 return img;
                                             })()}

@@ -18,7 +18,16 @@ export default function CategoryCard({ name, icon, href, badge }: CategoryCardPr
                     </span>
                 )}
                 <Image
-                    src={icon}
+                    src={(() => {
+                        let imgSrc = icon;
+                        if (imgSrc.startsWith('http://') && !imgSrc.includes('localhost')) {
+                            imgSrc = imgSrc.replace('http://', 'https://');
+                        }
+                        if (imgSrc.includes('res.cloudinary.com') && !imgSrc.includes('f_auto')) {
+                            imgSrc = imgSrc.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
+                        }
+                        return imgSrc;
+                    })()}
                     alt={name}
                     width={128}
                     height={128}

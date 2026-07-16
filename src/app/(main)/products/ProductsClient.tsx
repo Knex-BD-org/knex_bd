@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChevronRight, Frown } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import ProductListCard from "@/components/ProductListCard";
 import ProductGridCard from "@/components/ProductGridCard";
 import MobileFilters from "@/components/MobileFilters";
@@ -332,17 +333,26 @@ export default function ProductsClient({
                                             <div className="w-full h-full bg-white rounded-full p-1 sm:p-1.5 flex items-center justify-center overflow-hidden">
                                                 {item.image ? (
                                                     <div className="relative w-full h-full rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                                                        <img
+                                                        <Image
                                                             src={(() => {
-                                                                const img = item.image;
+                                                                let img = item.image;
                                                                 if (img.startsWith('/uploads')) {
                                                                     const baseUrl = API.replace('/api', '');
-                                                                    return `${baseUrl}${img}`;
+                                                                    img = `${baseUrl}${img}`;
+                                                                }
+                                                                // Upgrade http to https to avoid mixed-content blocks on mobile devices
+                                                                if (img.startsWith('http://') && !img.includes('localhost')) {
+                                                                    img = img.replace('http://', 'https://');
+                                                                }
+                                                                if (img.includes('res.cloudinary.com') && !img.includes('f_auto')) {
+                                                                    img = img.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
                                                                 }
                                                                 return img;
                                                             })()}
                                                             alt={item.name}
-                                                            className="w-full h-full object-cover"
+                                                            fill
+                                                            className="object-cover"
+                                                            unoptimized
                                                         />
                                                     </div>
                                                 ) : (
