@@ -157,11 +157,9 @@ export default function CategoryNav() {
                                                     const baseUrl = API.replace('/api', '');
                                                     img = `${baseUrl}${img}`;
                                                 }
+                                                img = img.trim().replace(/ /g, '%20');
                                                 if (img.startsWith('http://') && !img.includes('localhost')) {
                                                     img = img.replace('http://', 'https://');
-                                                }
-                                                if (img.includes('res.cloudinary.com') && !img.includes('f_auto')) {
-                                                    img = img.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
                                                 }
                                                 return img;
                                             })()}

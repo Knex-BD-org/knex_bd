@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         hostname: 'knex.com.bd',
       },
       {
+        protocol: 'https',
+        hostname: 'api.knex.com.bd',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
       },

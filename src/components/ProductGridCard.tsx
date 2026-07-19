@@ -68,7 +68,7 @@ export default function ProductGridCard({
             <div className="aspect-square bg-gray-50 p-4 relative">
                 <div className="w-full h-full flex items-center justify-center relative">
                     {image ? (
-                        <Image src={image} alt={title} fill className="object-contain" unoptimized />
+                        <Image src={image.trim().replace(/ /g, '%20').replace('http://', 'https://')} alt={title} fill className="object-contain" />
                     ) : (
                         <Package className="w-16 h-16 text-gray-300" />
                     )}

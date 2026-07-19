@@ -78,7 +78,7 @@ export default function ProductListCard({
             <div className="w-full sm:w-40 md:w-48 h-40 sm:h-40 md:h-48 shrink-0 bg-gray-50 rounded-lg relative">
                 <div className="w-full h-full flex items-center justify-center relative">
                     {image ? (
-                        <Image src={image} alt={title} fill className="object-contain" unoptimized />
+                        <Image src={image.trim().replace(/ /g, '%20').replace('http://', 'https://')} alt={title} fill className="object-contain" />
                     ) : (
                         <Package className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-gray-300" />
                     )}

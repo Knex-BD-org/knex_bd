@@ -27,7 +27,7 @@ export default function ProductCard({ title, price, iconName, image, discount, h
                     {IconComponent ? (
                         <IconComponent className="w-16 h-16 text-gray-500" />
                     ) : image ? (
-                        <Image src={image} alt={title} fill className="object-contain" unoptimized />
+                        <Image src={image.trim().replace(/ /g, '%20').replace('http://', 'https://')} alt={title} fill className="object-contain" />
                     ) : (
                         <Package className="w-16 h-16 text-gray-400" />
                     )}

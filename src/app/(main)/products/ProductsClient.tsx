@@ -340,19 +340,17 @@ export default function ProductsClient({
                                                                     const baseUrl = API.replace('/api', '');
                                                                     img = `${baseUrl}${img}`;
                                                                 }
+                                                                // Clean up any stray spaces
+                                                                img = img.trim().replace(/ /g, '%20');
                                                                 // Upgrade http to https to avoid mixed-content blocks on mobile devices
                                                                 if (img.startsWith('http://') && !img.includes('localhost')) {
                                                                     img = img.replace('http://', 'https://');
-                                                                }
-                                                                if (img.includes('res.cloudinary.com') && !img.includes('f_auto')) {
-                                                                    img = img.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
                                                                 }
                                                                 return img;
                                                             })()}
                                                             alt={item.name}
                                                             fill
                                                             className="object-cover"
-                                                            unoptimized
                                                         />
                                                     </div>
                                                 ) : (

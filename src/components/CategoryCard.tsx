@@ -20,11 +20,9 @@ export default function CategoryCard({ name, icon, href, badge }: CategoryCardPr
                 <Image
                     src={(() => {
                         let imgSrc = icon;
+                        imgSrc = imgSrc.trim().replace(/ /g, '%20');
                         if (imgSrc.startsWith('http://') && !imgSrc.includes('localhost')) {
                             imgSrc = imgSrc.replace('http://', 'https://');
-                        }
-                        if (imgSrc.includes('res.cloudinary.com') && !imgSrc.includes('f_auto')) {
-                            imgSrc = imgSrc.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
                         }
                         return imgSrc;
                     })()}
@@ -32,7 +30,6 @@ export default function CategoryCard({ name, icon, href, badge }: CategoryCardPr
                     width={128}
                     height={128}
                     className="w-full h-full object-contain"
-                    unoptimized={icon.startsWith('http')}
                 />
             </div>
             <span className="text-xs sm:text-sm font-medium text-gray-700 text-center -mt-1 group-hover:text-blue-600 transition-colors">{name}</span>
