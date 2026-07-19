@@ -393,7 +393,7 @@ export default function ProductsClient({
 
                         {showGridType === "products" && totalPages > 1 && (
                             <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 flex-wrap">
-                                <button onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} className="px-3 sm:px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs sm:text-sm" disabled={currentPage === 1}>
+                                <button onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} className="px-3 sm:px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 cursor-pointer text-xs sm:text-sm" disabled={currentPage === 1}>
                                     Previous
                                 </button>
                                 <div className="flex gap-1 sm:gap-2">
@@ -403,7 +403,7 @@ export default function ProductsClient({
                                         </button>
                                     ))}
                                 </div>
-                                <button onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} className="px-3 sm:px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs sm:text-sm" disabled={currentPage === totalPages}>
+                                <button onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} className="px-3 sm:px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 cursor-pointer text-xs sm:text-sm" disabled={currentPage === totalPages}>
                                     Next
                                 </button>
                             </div>

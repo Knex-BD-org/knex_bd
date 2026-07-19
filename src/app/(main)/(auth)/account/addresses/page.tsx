@@ -271,7 +271,7 @@ export default function AddressesPage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
+                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2  text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
                             >
                                 <Save className="w-5 h-5" />
                                 {saving ? "Saving..." : "Save Address"}

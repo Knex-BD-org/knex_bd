@@ -998,7 +998,7 @@ export default function SingleProductPage() {
                                                     value={reviewName}
                                                     onChange={(e) => setReviewName(e.target.value)}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                    className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter your name"
                                                 />
                                             </div>
@@ -1009,7 +1009,7 @@ export default function SingleProductPage() {
                                                     value={reviewEmail}
                                                     onChange={(e) => setReviewEmail(e.target.value)}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                    className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter your email"
                                                 />
                                             </div>
@@ -1038,7 +1038,7 @@ export default function SingleProductPage() {
                                                 onChange={(e) => setReviewComment(e.target.value)}
                                                 required
                                                 rows={4}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                                                 placeholder="Share your experience with this product..."
                                             />
                                         </div>
