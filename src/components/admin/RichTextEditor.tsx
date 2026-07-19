@@ -6,6 +6,10 @@ import StarterKit from '@tiptap/starter-kit';
 import ImageResize from 'tiptap-extension-resize-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
 import { useState, useEffect } from 'react';
 import { useNotification } from '@/context/NotificationContext';
 import { compressImageClient } from '@/lib/imageCompression';
@@ -20,7 +24,9 @@ import {
     Undo,
     Redo,
     Code,
-    X
+    X,
+    Table as TableIcon,
+    Trash2
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -95,6 +101,12 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
             Placeholder.configure({
                 placeholder,
             }),
+            Table.configure({
+                resizable: true,
+            }),
+            TableRow,
+            TableHeader,
+            TableCell,
         ],
         content: value,
         onUpdate: ({ editor }) => {
@@ -221,6 +233,59 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
                 >
                     <Link2 className="w-4 h-4" />
                 </button>
+
+                <button
+                    type="button"
+                    onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+                    className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('table') ? 'bg-gray-300' : ''}`}
+                    title="Insert Table"
+                >
+                    <TableIcon className="w-4 h-4" />
+                </button>
+                {editor.isActive('table') && (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().deleteTable().run()}
+                            className="p-2 rounded hover:bg-gray-200 text-red-600"
+                            title="Delete Table"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().addRowAfter().run()}
+                            className="p-2 rounded hover:bg-gray-200"
+                            title="Add Row After"
+                        >
+                            Row+
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().deleteRow().run()}
+                            className="p-2 rounded hover:bg-gray-200 text-red-600"
+                            title="Delete Row"
+                        >
+                            Row-
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().addColumnAfter().run()}
+                            className="p-2 rounded hover:bg-gray-200"
+                            title="Add Column After"
+                        >
+                            Col+
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().deleteColumn().run()}
+                            className="p-2 rounded hover:bg-gray-200 text-red-600"
+                            title="Delete Column"
+                        >
+                            Col-
+                        </button>
+                    </>
+                )}
 
                 <div className="w-px bg-gray-300 mx-1" />
 

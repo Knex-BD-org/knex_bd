@@ -583,10 +583,9 @@ export default function SingleProductPage() {
 
                                 {product.description ? (
                                     <div className="mb-6">
-                                        <div
-                                            className="text-gray-600 leading-relaxed prose prose-sm max-w-none line-clamp-3"
-                                            dangerouslySetInnerHTML={{ __html: product.description }}
-                                        />
+                                        <div className="text-gray-600 leading-relaxed text-sm line-clamp-3">
+                                            {product.description.replace(/<[^>]*>?/gm, '')}
+                                        </div>
                                         <button
                                             onClick={() => {
                                                 setActiveTab("description");
