@@ -306,11 +306,10 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                 onClose();
                                 router.push("/");
                             }}
-                            className={`block w-full py-3 rounded-xl font-semibold transition cursor-pointer ${
-                                isLoggedIn
-                                ? "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                                : "bg-blue-600 text-white hover:bg-blue-700"
-                            }`}
+                            className={`block w-full py-3 rounded-xl font-semibold transition cursor-pointer ${isLoggedIn
+                                    ? "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                                    : "bg-blue-600 text-white hover:bg-blue-700"
+                                }`}
                         >
                             {t("continue_shopping")}
                         </button>
@@ -414,7 +413,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                                             key={addr.id}
                                             type="button"
                                             onClick={() => handleAddressSelect(addr.id)}
-                                            className={`w-full flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition text-left border-b border-gray-100 last:border-b-0 ${selectedAddressId === addr.id ? "bg-blue-50" : ""
+                                            className={`w-full flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition text-left  border-gray-100 last:border-b-0 ${selectedAddressId === addr.id ? "bg-blue-50" : ""
                                                 }`}
                                         >
                                             <MapPin size={16} className="text-blue-500 mt-0.5 shrink-0" />
@@ -570,7 +569,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-linear-to-r from-blue-600 to-green-600 text-white p-3 rounded-xl font-semibold hover:from-blue-700 hover:to-green-700 transition cursor-pointer mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full bg-linear-to-r from-blue-600 to-green-600 text-white p-3 rounded-xl font-semibold hover:from-blue-700 hover:to-green-700 transition  mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {isSubmitting ? (
                             <>

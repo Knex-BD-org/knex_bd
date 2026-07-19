@@ -169,7 +169,7 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                             <td className="py-4 px-2 text-center">
                                                 <input
                                                     type="number"
-                                                    className="w-16 text-center border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
+                                                    className="w-16 text-center border-b bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                                     value={item.quantity}
                                                     onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
                                                 />
@@ -177,7 +177,7 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                             <td className="py-4 px-2 text-right">
                                                 <input
                                                     type="number"
-                                                    className="w-24 text-right border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
+                                                    className="w-24 text-right border-b  bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                                     value={item.price}
                                                     onChange={(e) => handleItemChange(idx, 'price', e.target.value)}
                                                 />
@@ -205,7 +205,7 @@ export default function OrderInvoice({ order, onClose }: OrderInvoiceProps) {
                                     <span className="mr-1">Tk</span>
                                     <input
                                         type="number"
-                                        className="w-16 text-right border-b border-gray-300 bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
+                                        className="w-16 text-right border-b bg-transparent outline-none focus:border-blue-500 print:border-none print:p-0"
                                         value={deliveryCharge}
                                         onChange={(e) => setDeliveryCharge(Number(e.target.value) || 0)}
                                     />

@@ -210,7 +210,7 @@ export function Section({ titleEn, titleBn, childrenEn, childrenBn }: SectionPro
     const currentChildren = lang === "en" ? childrenEn : (childrenBn || childrenEn);
 
     return (
-        <section className="mb-12 last:mb-0">
+        <section className="mb-6">
             <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                 <span className="w-1.5 h-8 bg-blue-600 rounded-full" />
                 {currentTitle}

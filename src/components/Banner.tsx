@@ -37,7 +37,7 @@ export default function Banner({ images, autoSlide = true, interval = 5000 }: Ba
     if (!images || images.length === 0) return null;
 
     return (
-        <div suppressHydrationWarning className="relative overflow-hidden rounded-xl md:rounded-2xl group w-full aspect-[2.5/1] sm:aspect-[3.5/1] md:aspect-[4.5/1] lg:aspect-5/1 bg-transparent">
+        <div suppressHydrationWarning className="relative overflow-hidden rounded-xl md:rounded-2xl group w-full aspect-2.5/1 sm:aspect-3.5/1 md:aspect-4.5/1 lg:aspect-5/1 bg-transparent">
             <div
                 className="flex transition-transform duration-700 ease-in-out h-full"
                 style={{ transform: `translateX(-${current * 100}%)` }}
