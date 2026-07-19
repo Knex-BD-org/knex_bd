@@ -322,7 +322,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
                                             accept="image/*"
                                             onChange={handleFileUpload}
                                             disabled={uploading}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                                            className="w-full border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
                                         />
                                         {uploading && (
                                             <div className="mt-2 flex items-center gap-2 text-sm text-blue-600">
