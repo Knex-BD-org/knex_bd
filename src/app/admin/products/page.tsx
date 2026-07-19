@@ -59,7 +59,7 @@ export default function AdminProducts() {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            
+
             if (searchQuery) {
                 params.append("search", searchQuery);
                 params.append("limit", "1000"); // Fetch more results for local filtering
@@ -67,7 +67,7 @@ export default function AdminProducts() {
                 params.append("page", currentPage.toString());
                 params.append("limit", "10");
             }
-            
+
             if (categoryFilter) params.append("category", categoryFilter);
             if (subCategoryFilter) params.append("subcategory", subCategoryFilter);
             if (statusFilter === "instock") params.append("inStock", "true");
@@ -91,10 +91,10 @@ export default function AdminProducts() {
             if (searchQuery) {
                 // Client-side filtering by title
                 const query = searchQuery.toLowerCase();
-                fetchedProducts = fetchedProducts.filter((p: Product) => 
+                fetchedProducts = fetchedProducts.filter((p: Product) =>
                     p.title.toLowerCase().includes(query)
                 );
-                
+
                 // Client-side pagination
                 total = fetchedProducts.length;
                 totalPgs = Math.ceil(total / 10);
@@ -196,7 +196,7 @@ export default function AdminProducts() {
                                 placeholder="Search products..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500  outline-none"
                             />
                         </div>
 
@@ -232,7 +232,7 @@ export default function AdminProducts() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full sm:w-auto px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                                className="w-full sm:w-auto px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500  outline-none bg-white"
                             >
                                 <option value="">All Status</option>
                                 <option value="instock">In Stock</option>
