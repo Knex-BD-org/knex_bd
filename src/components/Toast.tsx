@@ -38,7 +38,7 @@ export default function Toast({ message, type, onClose }: ToastProps) {
     return (
         <div className={`
             flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg pointer-events-auto
-            min-w-[300px] animate-in slide-in-from-right duration-300
+            min-w-300px animate-in slide-in-from-right duration-300
             ${isExiting ? "animate-out fade-out slide-out-to-right fill-mode-forwards" : ""}
             ${bgMap[type]}
         `}>

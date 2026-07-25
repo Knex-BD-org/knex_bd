@@ -135,7 +135,7 @@ export default function ProductListCard({
             </div>
 
             {/* Desktop Price Section */}
-            <div className="hidden sm:flex flex-col justify-between items-end min-w-40 md:min-w-[200px]">
+            <div className="hidden sm:flex flex-col justify-between items-end min-w-40 md:min-w-200px">
                 <div className="text-right">
                     <div className="flex items-center justify-end gap-2 mb-1">
                         <span className="text-xl md:text-2xl font-semibold">Tk {price.toLocaleString()}</span>

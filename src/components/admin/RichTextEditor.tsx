@@ -149,7 +149,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
 
     if (!mounted || !editor) {
         return (
-            <div className="border border-gray-200 rounded-lg p-4 min-h-[200px] bg-gray-50 animate-pulse">
+            <div className="border border-gray-200 rounded-lg p-4 min-h-200px bg-gray-50 animate-pulse">
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/2"></div>
             </div>
@@ -312,7 +312,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Enter d
             {/* Editor Content */}
             <EditorContent
                 editor={editor}
-                className="prose max-w-none p-4 min-h-[200px] focus:outline-none"
+                className="prose max-w-none p-4 min-h-200px focus:outline-none"
             />
 
             {/* Modern Image Upload Modal */}

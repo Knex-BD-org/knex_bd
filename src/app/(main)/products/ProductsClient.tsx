@@ -329,7 +329,7 @@ export default function ProductsClient({
                                         href={showGridType === "subcategories" ? `/category/${categoryParam}/${item.slug}` : `/category/${categoryParam}/${subcategoryParam}/${item.slug}`}
                                         className="flex flex-col items-center gap-3 group cursor-pointer"
                                     >
-                                        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full p-[2px] sm:p-[3px] bg-linear-to-tr from-gray-200 to-gray-300 group-hover:from-blue-500 group-hover:to-purple-500 transition-all duration-500 shadow-sm group-hover:shadow-md">
+                                        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full p-2px sm:p-3px bg-linear-to-tr from-gray-200 to-gray-300 group-hover:from-blue-500 group-hover:to-purple-500 transition-all duration-500 shadow-sm group-hover:shadow-md">
                                             <div className="w-full h-full bg-white rounded-full p-1 sm:p-1.5 flex items-center justify-center overflow-hidden">
                                                 {item.image ? (
                                                     <div className="relative w-full h-full rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-700 ease-in-out">

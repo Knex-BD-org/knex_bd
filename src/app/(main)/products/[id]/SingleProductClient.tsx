@@ -437,7 +437,7 @@ export default function SingleProductPage() {
                         <ChevronRight className="w-4 h-4 mx-2" />
                         <Link href="/products" className="hover:text-blue-600">Products</Link>
                         <ChevronRight className="w-4 h-4 mx-2" />
-                        <span className="text-gray-900 font-medium truncate max-w-[200px] sm:max-w-md">{product.title}</span>
+                        <span className="text-gray-900 font-medium truncate max-w-200px sm:max-w-md">{product.title}</span>
                     </div>
                 </div>
             </div>
@@ -498,7 +498,7 @@ export default function SingleProductPage() {
                             </div>
 
                             {/* Main Image Container - Square Aspect and Slightly Larger Size */}
-                            <div className="flex-1 w-full lg:max-w-[420px] mx-auto lg:mx-0">
+                            <div className="flex-1 w-full lg:max-w-420px mx-auto lg:mx-0">
                                 <div
                                     className={`relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center ${galleryImages[selectedImage].bg} border border-gray-100 cursor-zoom-in group`}
                                     onMouseEnter={() => setShowZoom(true)}
@@ -945,7 +945,7 @@ export default function SingleProductPage() {
                             </button>
                         ))}
                     </div>
-                    <div className="p-6 lg:p-10 bg-gray-50/50 min-h-[300px]">
+                    <div className="p-6 lg:p-10 bg-gray-50/50 min-h-300px">
                         {activeTab === "description" && (
                             <div className="prose max-w-none text-gray-600">
                                 {product.description ? (

@@ -177,7 +177,7 @@ export default function MyOrdersPage() {
 
                     {/* Order Progress */}
                     <div className="p-6 border-b bg-gray-50 overflow-x-auto">
-                        <div className="flex justify-between items-center min-w-[400px] max-w-2xl mx-auto">
+                        <div className="flex justify-between items-center min-w-400px max-w-2xl mx-auto">
                             {["pending", "processing", "shipped", "delivered"].map((step, idx) => {
                                 const stepOrder = ["pending", "processing", "shipped", "delivered"];
                                 const currentIdx = stepOrder.indexOf(selectedOrder.status);
@@ -356,8 +356,8 @@ export default function MyOrdersPage() {
             {/* Error Message */}
             {error && (
                 <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${isAuthError
-                        ? "bg-red-50 border-red-200"
-                        : "bg-yellow-50 border-yellow-200"
+                    ? "bg-red-50 border-red-200"
+                    : "bg-yellow-50 border-yellow-200"
                     }`}>
                     <AlertCircle className={`w-5 h-5 mt-0.5 shrink-0 ${isAuthError ? "text-red-600" : "text-yellow-600"
                         }`} />

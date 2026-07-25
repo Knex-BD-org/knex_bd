@@ -161,7 +161,7 @@ export default function InfoPageLayout({
                                 )}
                             </div>
 
-                            <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-sm min-h-[500px]">
+                            <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-sm min-h-500px">
                                 <article className="prose prose-gray max-w-none prose-p:text-gray-600 prose-headings:text-gray-900 prose-li:text-gray-600 prose-strong:text-gray-900">
                                     {children}
                                 </article>
