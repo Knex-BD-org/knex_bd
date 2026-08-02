@@ -93,7 +93,7 @@ export default function HomePage() {
     const topDeals = [
         { title: "Herbal Hair Oil", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781595644/knex_uploads/p29i1-1781595642931-1781595643065.webp", href: "/category/beauty/herbal" },
         { title: "Authentic Herbal Products", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781593057/knex_uploads/p26i4-1781593055793-1781593056344.webp", href: "/category/beauty/herbal" },
-        { title: "Natural Herbal Beauty Essentials", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781587365/knex_uploads/f12i1-1781587363919-1781587364063.webp", href: "/category/beauty/herbal" },
+        { title: "Natural Herbal Beauty Essentials", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1783408822/knex_uploads/jkho1-1783408820480-1783408820642.webp", href: "/category/beauty/herbal" },
         { title: "Pure Glow Herbal Face Products", price: "Starting From Very Resonable Price", image: "https://res.cloudinary.com/druwzzjp3/image/upload/v1781511351/knex_uploads/f6i1-1781511350008-1781511350295.webp", href: "/category/beauty/herbal" },
     ];
 
